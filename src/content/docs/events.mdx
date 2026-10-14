@@ -83,7 +83,7 @@ A drop at any step costs nothing more; the line is forgotten and the next one is
 
 sshd's log format has been stable for a very long time, and these four lines answer the whole question of
 "who got in, and who tried". The parser lives in one file and is covered by tests against a real
-[`auth.log` fixture](https://github.com/fllottie/gabier/blob/main/tests/fixtures/auth.log), so a distribution
+[`auth.log` fixture](https://github.com/Flottille/gabier/blob/main/tests/fixtures/auth.log), so a distribution
 that formats a line differently is a one-line fix with a test rather than an architectural problem.
 
 There is no history and no state across restarts: Gabier reports what just happened and forgets it. Your

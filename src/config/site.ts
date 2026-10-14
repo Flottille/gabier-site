@@ -1,9 +1,9 @@
 /**
  * Single source of truth for everything that is "the project" rather than "the site".
  *
- * Two repositories under the `fllottie` organisation:
- *   fllottie/gabier       the Rust daemon
- *   fllottie/gabier-site  this site
+ * Two repositories under the `Flottille` organisation:
+ *   Flottille/gabier       the Rust daemon
+ *   Flottille/gabier-site  this site
  *
  * TODO before going live: fill in `stats` once the binary has been measured.
  */
@@ -22,17 +22,17 @@ export const SITE = {
   license: 'MIT',
   author: {
     name: 'Thibault Pointurier',
-    url: 'https://github.com/fllottie',
+    url: 'https://github.com/ThibaultPointurier',
   },
-  org: 'fllottie',
+  org: 'Flottille',
   repo: {
-    owner: 'fllottie',
+    owner: 'Flottille',
     name: 'gabier',
     branch: 'main',
   },
   /** The repository holding this site, for "edit this page". */
   siteRepo: {
-    owner: 'fllottie',
+    owner: 'Flottille',
     name: 'gabier-site',
     branch: 'main',
   },

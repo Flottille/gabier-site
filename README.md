@@ -1,6 +1,6 @@
 # gabier.sh
 
-The website and documentation for [Gabier](https://github.com/fllottie/gabier), a small Rust daemon that
+The website and documentation for [Gabier](https://github.com/Flottille/gabier), a small Rust daemon that
 notifies Discord or Slack on SSH logins.
 
 Astro 5, Tailwind v4, statically generated. No client framework, ~3 kB of JavaScript on the heaviest page.
@@ -107,7 +107,7 @@ GitHub Pages via `.github/workflows/deploy.yml`, on every push to `main`. The cu
 | --- | --- | --- |
 | `A` | `@` | `185.199.108.153`, `.109.153`, `.110.153`, `.111.153` |
 | `AAAA` | `@` | `2606:50c0:8000::153`, `8001::153`, `8002::153`, `8003::153` |
-| `CNAME` | `www` | `fllottie.github.io` |
+| `CNAME` | `www` | `Flottille.github.io` |
 
 Then in the repository: **Settings → Pages → Custom domain → gabier.sh**, and tick **Enforce HTTPS** once
 the certificate is issued.
