@@ -1,0 +1,24 @@
+name: CI
+
+# Cloudflare Pages builds and deploys the site on push; this only guards
+# the branch, so a type error or a broken build is caught in the PR.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - run: npm ci
+      - run: npx astro check
+      - run: npm run build

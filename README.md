@@ -27,7 +27,7 @@ src/
   pages/                one file per route; docs/[...slug] renders the collection
   styles/global.css     Tailwind theme tokens, base layer, prose
 scripts/og.mjs          generates favicons and the Open Graph cards
-public/                 fonts, icons, OG images, CNAME, headers
+public/                 fonts, icons, OG images, _headers, _redirects
 maquette/               the original static mockup this site was built from
 ```
 
@@ -100,32 +100,44 @@ npm run build && npm run preview
 
 ## Deployment
 
-GitHub Pages via `.github/workflows/deploy.yml`, on every push to `main`. The custom domain comes from
-`public/CNAME`.
+Cloudflare Pages, connected to this repository. Every push to `main` is built and published by Cloudflare;
+pull requests get their own preview URL. GitHub Actions only type-checks and builds, as a guard.
 
-`gabier.nebulabs.org` is a subdomain, so it takes exactly one DNS record — not the four A records an apex
-domain would need. In the Cloudflare zone for `nebulabs.org`:
+One-time setup in the Cloudflare dashboard — **Workers & Pages → Create → Pages → Connect to Git**:
 
-| Type | Name | Target | Proxy |
-| --- | --- | --- | --- |
-| `CNAME` | `gabier` | `Flottille.github.io` | **DNS only** |
+| Setting | Value |
+| --- | --- |
+| Repository | `Flottille/gabier-site` |
+| Production branch | `main` |
+| Framework preset | Astro (or None) |
+| Build command | `npm run build` |
+| Output directory | `dist` |
 
-The proxy status matters: with Cloudflare's orange cloud on, GitHub cannot validate the domain and will
-never issue the certificate. Leave it grey until **Settings → Pages** reports the certificate as issued and
-**Enforce HTTPS** can be ticked.
+The Node version comes from `.node-version`, so there is no environment variable to set.
 
-Propagation usually takes a couple of minutes:
+Then **Custom domains → Set up a domain → `gabier.nebulabs.org`**. Because the zone is already on this
+Cloudflare account, the DNS record and the certificate are created automatically — nothing to add by hand.
 
-```sh
-dig +short gabier.nebulabs.org
-curl -sI https://gabier.nebulabs.org | head -1
-```
+### Headers and redirects
 
-`netlify.toml` and `public/_headers` are there if the site ever moves to Netlify or Cloudflare Pages; they
-carry the security headers and the cache policy, which GitHub Pages ignores.
+`public/_headers` and `public/_redirects` are read by Cloudflare Pages (GitHub Pages ignored both, which is
+why the content policy had never actually been exercised).
+
+The content security policy itself is **not** in `_headers`: Astro emits it as a `<meta>` tag so it can hash
+its own inline scripts, whose hashes change on every build. `_headers` carries only `frame-ancestors`, which
+a meta tag cannot express, plus the other security headers and the cache policy.
+
+Two directives are load-bearing and easy to break:
+
+- `script-src 'wasm-unsafe-eval'` and `worker-src 'self'` — Pagefind runs the search index as WebAssembly
+  inside a Web Worker. Remove either and the search box silently finds nothing.
+- `style-src 'unsafe-inline'` — a handful of components size elements with a `style` attribute, and
+  attributes cannot be hashed.
+
+Both live in `experimental.csp` in `astro.config.ts`.
 
 ## Before the first deploy
 
 - [ ] Measure the binary and fill in `STATS` in `src/config/site.ts` — the build warns while `[X]` is still
       there.
-- [ ] Add the CNAME record in the nebulabs.org zone and confirm the certificate is issued.
+- [ ] Connect the repository in Cloudflare Pages and attach gabier.nebulabs.org.

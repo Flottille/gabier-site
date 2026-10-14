@@ -1,0 +1,6 @@
+# The maquette shipped .html URLs. Cheap insurance if any were ever shared.
+/index.html        /                 301
+/features.html     /features/        301
+/how-it-works.html /how-it-works/    301
+/install.html      /install/         301
+/docs/index.html   /docs/            301

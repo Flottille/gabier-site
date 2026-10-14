@@ -67,4 +67,36 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  experimental: {
+    /**
+     * Astro emits the policy as a <meta> tag and hashes its own inline scripts,
+     * which a hand-written header cannot do: those hashes change every build.
+     *
+     * `wasm-unsafe-eval` and `worker-src` are for Pagefind, which instantiates
+     * WebAssembly inside a Web Worker to run the docs search.
+     *
+     * frame-ancestors cannot be set from a meta tag; it lives in public/_headers.
+     */
+    csp: {
+      algorithm: 'SHA-256',
+      directives: [
+        "default-src 'self'",
+        "img-src 'self' data:",
+        "font-src 'self'",
+        "connect-src 'self'",
+        "worker-src 'self'",
+        "base-uri 'self'",
+        "form-action 'none'",
+        "object-src 'none'",
+      ],
+      scriptDirective: {
+        resources: ["'self'", "'wasm-unsafe-eval'"],
+      },
+      styleDirective: {
+        // style="" attributes cannot be hashed, so they need unsafe-inline.
+        resources: ["'self'", "'unsafe-inline'"],
+      },
+    },
+  },
 });
