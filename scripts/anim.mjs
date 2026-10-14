@@ -109,10 +109,10 @@ const T = {
 };
 
 const STAGES = [
-  { file: "watch.rs", label: "suit le journal" },
-  { file: "sshd.rs", label: "analyse la ligne" },
-  { file: "notify.rs", label: "filtre et regroupe" },
-  { file: "hook.rs", label: "poste le webhook" },
+  { file: "watch.rs", label: "follows the journal" },
+  { file: "sshd.rs", label: "parses the line" },
+  { file: "notify.rs", label: "filters and groups" },
+  { file: "hook.rs", label: "posts the webhook" },
 ];
 
 /** Which pipeline box is lit at time t, and how brightly. */
@@ -189,7 +189,7 @@ function terminalPanel(t) {
       row(
         { gap: 7 },
         el("div", { style: { width: 9, height: 9, borderRadius: 5, backgroundColor: C.accent, display: "flex" } }),
-        text("en écoute", { fontFamily: "IBM Plex Mono", fontSize: 13, color: C.inkDim }),
+        text("listening", { fontFamily: "IBM Plex Mono", fontSize: 13, color: C.inkDim }),
       ),
     ),
     col({ padding: "16px 18px", gap: 7, flex: 1, overflow: "hidden" }, ...lines),
@@ -436,9 +436,9 @@ function counters(t) {
 
   return row(
     { gap: 28 },
-    stat("reçu", scanP > 0 ? refused + 1 : sentBeat1, C.ink),
-    stat("regroupé", heldP > 0 ? Math.max(0, refused - 1) : 0, C.brandSoft),
-    stat("notifié", sentBeat1 + sentFirstFail + sentBeat2, C.accent),
+    stat("received", scanP > 0 ? refused + 1 : sentBeat1, C.ink),
+    stat("grouped", heldP > 0 ? Math.max(0, refused - 1) : 0, C.brandSoft),
+    stat("notified", sentBeat1 + sentFirstFail + sentBeat2, C.accent),
   );
 }
 
@@ -446,11 +446,11 @@ function counters(t) {
  * Frame
  * ------------------------------------------------------------------ */
 function caption(t) {
-  if (t < T.travel[0]) return "Une connexion SSH est acceptée.";
-  if (t < T.card1[0]) return "La ligne traverse le pipeline.";
-  if (t < T.scanIn[0]) return "Notification en moins d'une seconde.";
-  if (t < T.card2[0]) return "Un scan arrive : des centaines de tentatives.";
-  if (t < T.outro[0]) return "Une seule notification. C'est tout l'intérêt.";
+  if (t < T.travel[0]) return "An SSH login is accepted.";
+  if (t < T.card1[0]) return "The line crosses the pipeline.";
+  if (t < T.scanIn[0]) return "Notified in under a second.";
+  if (t < T.card2[0]) return "A scan arrives: hundreds of attempts.";
+  if (t < T.outro[0]) return "One notification. That is the whole point.";
   return "gabier.nebulabs.org";
 }
 
@@ -497,7 +497,7 @@ function frame(t, crab) {
         col(
           { gap: 1 },
           text("Gabier", { fontSize: 28, fontWeight: 700, color: C.ink }),
-          text("notifications SSH, Discord et Slack", { fontSize: 14, color: C.inkDim }),
+          text("SSH notifications, Discord and Slack", { fontSize: 14, color: C.inkDim }),
         ),
       ),
       counters(t),
@@ -521,7 +521,7 @@ function frame(t, crab) {
         color: outroP > 0.3 ? C.ink : C.inkMuted,
         fontWeight: outroP > 0.3 ? 700 : 500,
       }),
-      text("MIT · Rust · zéro dépendance", { fontSize: 14, color: C.inkDim, fontFamily: "IBM Plex Mono" }),
+      text("MIT · Rust · zero dependencies", { fontSize: 14, color: C.inkDim, fontFamily: "IBM Plex Mono" }),
     ),
   );
 }
