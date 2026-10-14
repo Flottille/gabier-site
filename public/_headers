@@ -22,6 +22,11 @@
 /og/*
   Cache-Control: public, max-age=604800, must-revalidate
 
+# Hotlinked from the GitHub READMEs, so it must stay cacheable and open.
+/media/*
+  Cache-Control: public, max-age=604800, must-revalidate
+  Access-Control-Allow-Origin: *
+
 # Rebuilt on every deploy; the entry file must not go stale.
 /pagefind/*
   Cache-Control: public, max-age=3600, must-revalidate

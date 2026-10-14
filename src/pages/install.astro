@@ -179,7 +179,7 @@ const jsonLd = [
           {
             installed.map(([path, what]) => (
               <div class="flex flex-wrap items-baseline gap-x-5 gap-y-1 border-b border-line px-4 py-3 last:border-b-0">
-                <dt class="rich-text flex-[0_0_18rem] font-mono text-[0.8125rem] text-brand-soft" set:html={path} />
+                <dt class="rich-text min-w-0 flex-[1_1_18rem] font-mono text-[0.8125rem] break-words text-brand-soft" set:html={path} />
                 <dd class="rich-text m-0 min-w-0 flex-1 text-[0.9375rem] leading-snug text-ink-muted" set:html={what} />
               </div>
             ))

@@ -141,3 +141,33 @@ Both live in `experimental.csp` in `astro.config.ts`.
 - [ ] Measure the binary and fill in `STATS` in `src/config/site.ts` — the build warns while `[X]` is still
       there.
 - [ ] Connect the repository in Cloudflare Pages and attach gabier.nebulabs.org.
+
+## The explainer animation
+
+`scripts/anim.mjs` renders the "how it works" explainer — the accepted login, then
+the 43-attempt scan that still produces one notification — and encodes it three ways
+into `public/media/`:
+
+```sh
+node scripts/anim.mjs            # render + encode
+node scripts/anim.mjs --frames   # frames only, into the temp dir
+node scripts/anim.mjs --encode   # re-encode the frames already rendered
+node scripts/anim.mjs --at 9.6   # a single frame, to check the layout
+```
+
+| File | Size | Use |
+| --- | --- | --- |
+| `how-it-works.mp4` | ~345 kB | Twitter/X, Discord, anywhere video is allowed |
+| `how-it-works.gif` | ~1.1 MB | GitHub READMEs, where it is certain to animate |
+| `how-it-works.webp` | ~370 kB | the web, when animated WebP is acceptable |
+
+Frames come from satori + sharp, same as the OG cards. ffmpeg does the MP4 and the
+GIF (its palettegen is far better than a generic quantiser); the WebP always goes
+through sharp, which produces it eight times smaller than ffmpeg's libwebp here.
+**Without ffmpeg the script still works** — it falls back to sharp for the GIF and
+WebP, and skips the MP4.
+
+Two things that will bite whoever edits it: arrows and other glyphs outside the latin
+subset render as tofu, because the fonts are subset — draw them as SVG instead. And
+sharp's `delay` option needs one entry per frame; a scalar is silently ignored and
+the whole animation plays in a tenth of a second.

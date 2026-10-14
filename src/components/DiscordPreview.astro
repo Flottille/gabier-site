@@ -35,12 +35,13 @@ const fields = [
       <p class="m-0 text-[0.8125rem]">
         SSH login accepted on <strong class="font-bold">vps-dedie-01</strong>.
       </p>
-      <dl class="m-0 grid grid-cols-2 gap-x-3.5 gap-y-2 text-xs">
+      <!-- One column on a phone: two would truncate "publickey ED25519". -->
+      <dl class="m-0 grid grid-cols-1 gap-x-3.5 gap-y-2 text-xs min-[26rem]:grid-cols-2">
         {
           fields.map((field) => (
             <div class="flex min-w-0 flex-col gap-0.5">
               <dt class="font-sans font-bold text-ink">{field.label}</dt>
-              <dd class="m-0 truncate font-mono">{field.value}</dd>
+              <dd class="m-0 font-mono break-words">{field.value}</dd>
             </div>
           ))
         }
