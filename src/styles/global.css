@@ -368,6 +368,20 @@
   vertical-align: top;
 }
 
+/* The first column of a reference table is the key being documented. It has
+   to read as one token: `events.ignore_users` broken over two lines is worse
+   than a scrollbar, and .table-scroll already provides the scrollbar. */
+.prose-gabier :where(th, td):first-child {
+  white-space: nowrap;
+}
+
+/* The base rule lets code break anywhere, so a webhook URL cannot widen a
+   paragraph. Inside a table that is counterproductive — the cell is already
+   in a scroll container, so break on spaces only. */
+.prose-gabier :where(th, td) :where(code) {
+  overflow-wrap: normal;
+}
+
 /* Tables scroll inside themselves, never the page. */
 .prose-gabier :where(.table-scroll) {
   overflow-x: auto;
