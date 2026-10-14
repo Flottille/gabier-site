@@ -20,6 +20,9 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const publicDir = path.join(root, "public");
 const ogDir = path.join(publicDir, "og");
 
+/** Keep in sync with SITE.url in src/config/site.ts. */
+const DOMAIN = "gabier.nebulabs.org";
+
 const PALETTE = {
   bg: "#0F1B2D",
   bgDeep: "#0B1424",
@@ -171,12 +174,12 @@ function card({ eyebrow, title, subtitle }, crabDataUri) {
           },
         },
         el("div", { style: { display: "flex", color: PALETTE.accent } }, "$"),
-        el("div", { style: { display: "flex", color: PALETTE.ink } }, "cargo install gabier"),
+        el("div", { style: { display: "flex", color: PALETTE.ink } }, "sudo ./install.sh"),
       ),
       el(
         "div",
         { style: { display: "flex", fontFamily: "IBM Plex Mono", fontSize: 25, color: PALETTE.inkMuted } },
-        "gabier.sh",
+        DOMAIN,
       ),
     ),
   );

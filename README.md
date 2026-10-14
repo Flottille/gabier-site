@@ -1,4 +1,4 @@
-# gabier.sh
+# gabier.nebulabs.org
 
 The website and documentation for [Gabier](https://github.com/Flottille/gabier), a small Rust daemon that
 notifies Discord or Slack on SSH logins.
@@ -101,16 +101,25 @@ npm run build && npm run preview
 ## Deployment
 
 GitHub Pages via `.github/workflows/deploy.yml`, on every push to `main`. The custom domain comes from
-`public/CNAME`; point `gabier.sh` at GitHub Pages with:
+`public/CNAME`.
 
-| Record | Name | Value |
-| --- | --- | --- |
-| `A` | `@` | `185.199.108.153`, `.109.153`, `.110.153`, `.111.153` |
-| `AAAA` | `@` | `2606:50c0:8000::153`, `8001::153`, `8002::153`, `8003::153` |
-| `CNAME` | `www` | `Flottille.github.io` |
+`gabier.nebulabs.org` is a subdomain, so it takes exactly one DNS record — not the four A records an apex
+domain would need. In the Cloudflare zone for `nebulabs.org`:
 
-Then in the repository: **Settings → Pages → Custom domain → gabier.sh**, and tick **Enforce HTTPS** once
-the certificate is issued.
+| Type | Name | Target | Proxy |
+| --- | --- | --- | --- |
+| `CNAME` | `gabier` | `Flottille.github.io` | **DNS only** |
+
+The proxy status matters: with Cloudflare's orange cloud on, GitHub cannot validate the domain and will
+never issue the certificate. Leave it grey until **Settings → Pages** reports the certificate as issued and
+**Enforce HTTPS** can be ticked.
+
+Propagation usually takes a couple of minutes:
+
+```sh
+dig +short gabier.nebulabs.org
+curl -sI https://gabier.nebulabs.org | head -1
+```
 
 `netlify.toml` and `public/_headers` are there if the site ever moves to Netlify or Cloudflare Pages; they
 carry the security headers and the cache policy, which GitHub Pages ignores.
@@ -119,4 +128,4 @@ carry the security headers and the cache policy, which GitHub Pages ignores.
 
 - [ ] Measure the binary and fill in `STATS` in `src/config/site.ts` — the build warns while `[X]` is still
       there.
-- [ ] Point the DNS at GitHub Pages and set the custom domain.
+- [ ] Add the CNAME record in the nebulabs.org zone and confirm the certificate is issued.

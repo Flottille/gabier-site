@@ -15,7 +15,7 @@ export const SITE = {
   description:
     'Gabier watches SSH logins on your VPS and pings you on Discord or Slack within a second. One Rust binary, zero dependencies, with burst throttling so a port-22 scan never drowns the real login.',
   /** Canonical origin, no trailing slash. Drives canonical URLs, the sitemap and OG tags. */
-  url: 'https://gabier.sh',
+  url: 'https://gabier.nebulabs.org',
   lang: 'en',
   locale: 'en_US',
   version: '0.1.0',
