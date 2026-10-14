@@ -1,0 +1,235 @@
+---
+import { Picture } from "astro:assets";
+import pince from "../assets/pince.png";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import Button from "../components/Button.astro";
+import Terminal from "../components/Terminal.astro";
+import FeatureCard from "../components/FeatureCard.astro";
+import DiscordPreview from "../components/DiscordPreview.astro";
+import { SITE, LINKS } from "../config/site";
+import { softwareApplicationLd, webSiteLd, howToLd } from "../lib/jsonld";
+
+const features = [
+  {
+    icon: "clock" as const,
+    title: "Within a second",
+    body: "Streams journald or tails auth.log through rotations. The moment sshd writes the line, the notification is on its way.",
+  },
+  {
+    icon: "sliders" as const,
+    title: "Scan-proof by design",
+    body: "Per-IP burst limits fold a thousand refused attempts into one summary — so the single login that succeeded is still the thing you see.",
+  },
+  {
+    icon: "shield" as const,
+    title: "Hardened by default",
+    body: "A dedicated account with no shell, a read-only system, no capabilities, a 64 MB ceiling and a syscall filter. It reads logs and posts HTTPS.",
+  },
+  {
+    icon: "chat" as const,
+    title: "Discord and Slack",
+    body: "A plain webhook, no bot to invite. Both at once if you like: if one is down, the other still gets through.",
+  },
+  {
+    icon: "check" as const,
+    title: "One binary, that's it",
+    body: "Rust and rustls, no OpenSSL, no runtime. Debian, Ubuntu, Fedora, Arch, Alma: anywhere sshd runs.",
+  },
+  {
+    icon: "brackets" as const,
+    title: "Open source",
+    body: "MIT licensed. Read it, audit it, fork it — the parser is covered by tests against a real auth.log.",
+  },
+];
+
+const pipeline = [
+  {
+    step: "01 · Watch",
+    command: "journalctl --follow",
+    body: "Gabier follows the sshd journal, a log file through its rotations, or stdin for a dry run.",
+  },
+  {
+    step: "02 · Recognize",
+    command: "Accepted publickey for…",
+    body: "sshd lines are parsed into events: user, IP, port, method, key fingerprint.",
+  },
+  {
+    step: "03 · Decide",
+    command: "burst 1 / 300s",
+    body: "Filters, deduplication, and the per-IP throttle that keeps a scan out of your channel.",
+  },
+  {
+    step: "04 · Shout",
+    command: "POST webhook",
+    body: "A message lands in Discord or Slack, with retries. Pince did his job; back to what you were doing.",
+  },
+];
+
+const installScript = `$ git clone https://github.com/fllottie/gabier
+$ cd gabier && cargo build --release
+$ sudo ./install.sh                  # account, binary, unit, config
+$ sudo nano /etc/gabier/config.toml  # paste your webhook
+$ sudo -u gabier gabier check        # validates and reaches the webhook
+$ sudo systemctl start gabier`;
+
+const jsonLd = [
+  webSiteLd(),
+  softwareApplicationLd(),
+  howToLd({
+    name: "Install Gabier and get SSH login alerts on Discord or Slack",
+    description:
+      "Build the Gabier binary, run the installer, point it at a Discord or Slack webhook, and start the systemd service.",
+    steps: [
+      { name: "Build the binary", text: "Clone the repository and run `cargo build --release`, or cross-compile a static musl binary with Docker." },
+      { name: "Run the installer", text: "`sudo ./install.sh` creates the gabier service account, installs the binary, the hardened unit and an example config." },
+      { name: "Paste a webhook", text: "Edit /etc/gabier/config.toml, or put the secret in /etc/gabier/env as GABIER_DISCORD_WEBHOOK." },
+      { name: "Verify and start", text: "Run `gabier check` to validate the config and reach the webhook, then `systemctl start gabier`." },
+    ],
+  }),
+];
+---
+
+<BaseLayout
+  titleOverride={`${SITE.name} — SSH login alerts on Discord and Slack`}
+  title="SSH login alerts on Discord and Slack"
+  description={SITE.description}
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="w-full">
+    <div class="container-site flex flex-wrap items-center gap-12 pt-16 pb-14 md:pt-18">
+      <div class="flex min-w-0 flex-[999_1_26.25rem] flex-col gap-6">
+        <p class="eyebrow m-0">SSH daemon · Rust · Discord &amp; Slack</p>
+        <h1 class="m-0 text-display text-ink">Know who boards your server.</h1>
+        <p class="m-0 max-w-[32.5rem] text-xl leading-normal text-ink-muted">
+          Gabier watches the SSH logins on your VPS and pings you on Discord or Slack within a second. One Rust
+          binary, zero dependencies — and a throttle that keeps a port-22 scan out of your channel.
+        </p>
+        <div class="flex flex-wrap items-center gap-3">
+          <Button href="/install/" variant="primary">Install in 2 minutes</Button>
+          <Button href={LINKS.github} variant="outline" external>View the code</Button>
+        </div>
+      </div>
+
+      <div class="flex min-w-0 flex-[1_1_20rem] justify-center">
+        <Picture
+          src={pince}
+          formats={["avif", "webp"]}
+          widths={[320, 420, 840]}
+          sizes="(max-width: 48rem) 70vw, 420px"
+          alt="Pince, the crab topman in his crow's nest, spyglass aimed at the horizon"
+          loading="eager"
+          fetchpriority="high"
+          class="h-auto w-full max-w-[26.25rem] object-contain"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- What you get -->
+  <Section tone="elevated" space="md">
+    <div class="flex flex-wrap items-center gap-10">
+      <div class="flex min-w-0 flex-[1_1_20rem] flex-col gap-3.5">
+        <h2 class="m-0 text-h2 text-ink">What you get</h2>
+        <p class="m-0 text-lead text-ink-muted">
+          A clean embed you can read from your phone: who, from where, how. Get yourself pinged on accepted
+          logins, and let a thousand refused attempts collapse into a single line.
+        </p>
+      </div>
+      <DiscordPreview class="flex-[1_1_22.5rem]" />
+    </div>
+  </Section>
+
+  <!-- Features -->
+  <Section id="features">
+    <div class="flex flex-col gap-9">
+      <div class="flex max-w-[40rem] flex-col gap-2.5">
+        <h2 class="m-0 text-h2 text-ink">Small, quiet, always on watch</h2>
+        <p class="m-0 text-lead text-ink-muted">
+          Gabier does one thing and does it well. No heavy agent, no dashboard to host.
+        </p>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {features.map((feature) => (
+          <FeatureCard icon={feature.icon} title={feature.title}>{feature.body}</FeatureCard>
+        ))}
+      </div>
+    </div>
+  </Section>
+
+  <!-- The throttle, the real differentiator -->
+  <Section tone="elevated">
+    <div class="flex flex-wrap items-center gap-12">
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3.5">
+        <p class="step-label m-0">The one hard part</p>
+        <h2 class="m-0 text-h2 text-ink">A scan must not drown the real login</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          A VPS with port 22 open takes thousands of attempts a day. Notify all of them and the channel is
+          unreadable, which means you miss the one that matters. Gabier sends the first failures from an IP,
+          then counts the rest and posts one summary per window. Successful logins are never grouped.
+        </p>
+        <p class="m-0">
+          <a href="/docs/throttling/" class="inline-flex items-center gap-2 font-bold text-brand-soft no-underline hover:text-brand-bright">
+            How the throttle works
+            <span aria-hidden="true">→</span>
+          </a>
+        </p>
+      </div>
+      <Terminal
+        label="one scanner, five minutes"
+        copy={false}
+        class="flex-[1_1_22.5rem] !bg-bg"
+        code={`🚨 Rafale de tentatives SSH
+43 tentatives refusées depuis 185.243.96.107.
+Comptes visés  admin, oracle, postgres, test, ubuntu`}
+        lang="text"
+      />
+    </div>
+  </Section>
+
+  <!-- How it works -->
+  <Section id="how-it-works">
+    <div class="flex flex-col gap-9">
+      <h2 class="m-0 text-h2 text-ink">How it works</h2>
+      <ol class="m-0 grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          pipeline.map((stage) => (
+            <li class="flex min-w-0 flex-col gap-3">
+              <p class="step-label m-0">{stage.step}</p>
+              <p class="m-0 font-mono text-[0.9375rem] font-bold text-ink">{stage.command}</p>
+              <p class="m-0 text-[0.9375rem] leading-relaxed text-ink-muted">{stage.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="m-0">
+        <a href="/how-it-works/" class="inline-flex items-center gap-2 font-bold text-brand-soft no-underline hover:text-brand-bright">
+          Read the long version
+          <span aria-hidden="true">→</span>
+        </a>
+      </p>
+    </div>
+  </Section>
+
+  <!-- Install -->
+  <Section id="install" tone="elevated">
+    <div class="flex flex-wrap items-start gap-10">
+      <div class="flex min-w-0 flex-[1_1_18.75rem] flex-col gap-3.5">
+        <h2 class="m-0 text-h2 text-ink">Install in 2 minutes</h2>
+        <p class="m-0 text-lead text-ink-muted">
+          Build it, run the installer, paste one webhook. The script creates the service account, installs the
+          hardened unit and enables it at boot.
+        </p>
+        <p class="m-0">
+          <a href="/install/" class="inline-flex items-center gap-2 font-bold text-brand-soft no-underline hover:text-brand-bright">
+            Full install guide
+            <span aria-hidden="true">→</span>
+          </a>
+        </p>
+      </div>
+      <Terminal code={installScript} label="shell" class="flex-[999_1_28.75rem] !bg-bg" />
+    </div>
+  </Section>
+</BaseLayout>

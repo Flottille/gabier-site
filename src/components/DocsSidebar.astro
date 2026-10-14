@@ -1,0 +1,64 @@
+---
+import { docHref } from "../lib/docs";
+import type { DocGroup } from "../lib/docs";
+import { LINKS } from "../config/site";
+
+interface Props {
+  groups: DocGroup[];
+  class?: string;
+}
+
+const { groups, class: className = "" } = Astro.props;
+const here = Astro.url.pathname;
+---
+
+<nav aria-label="Documentation" class:list={["flex flex-col gap-6", className]} data-pagefind-ignore>
+  {
+    groups.map((group) => (
+      <div class="flex flex-col gap-1">
+        <h2 class="px-3 pb-2 font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">
+          {group.title}
+        </h2>
+        {group.items.map((doc) => {
+          const href = docHref(doc.id);
+          const current = here === href;
+          return (
+            <a
+              href={href}
+              aria-current={current ? "page" : undefined}
+              class:list={[
+                "flex min-h-10 items-center border-l-2 px-3 py-2 text-[0.9375rem] no-underline transition-colors",
+                current
+                  ? "rounded-r-lg border-brand bg-surface font-bold text-ink"
+                  : "border-transparent text-ink-muted hover:border-line-strong hover:text-ink",
+              ]}
+            >
+              {doc.data.navTitle ?? doc.data.title}
+            </a>
+          );
+        })}
+      </div>
+    ))
+  }
+
+  <div class="flex flex-col gap-1 border-t border-line pt-5">
+    <h2 class="px-3 pb-2 font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">Project</h2>
+    {
+      [
+        { href: LINKS.github, label: "GitHub" },
+        { href: LINKS.exampleConfig, label: "Example config" },
+        { href: LINKS.issues, label: "Report an issue" },
+      ].map((link) => (
+        <a
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex min-h-10 items-center border-l-2 border-transparent px-3 py-2 text-[0.9375rem] text-ink-muted no-underline transition-colors hover:text-ink"
+        >
+          {link.label}
+          <span class="ml-1.5 text-ink-dim" aria-hidden="true">↗</span>
+        </a>
+      ))
+    }
+  </div>
+</nav>

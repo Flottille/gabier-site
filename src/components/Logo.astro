@@ -1,0 +1,48 @@
+---
+import { Image } from "astro:assets";
+import pince from "../assets/pince.png";
+import { SITE } from "../config/site";
+
+export interface Props {
+  /** Tile size in px. The crab is inset by ~10%. */
+  size?: number;
+  /** Render the wordmark next to the mark. */
+  wordmark?: boolean;
+  wordmarkSize?: string;
+  href?: string | null;
+  class?: string;
+}
+
+const { size = 36, wordmark = true, wordmarkSize = "1.25rem", href = "/", class: className = "" } = Astro.props;
+
+const inner = Math.round(size * 0.9);
+const Tag = href ? "a" : "div";
+---
+
+<Tag
+  href={href ?? undefined}
+  class:list={["group flex shrink-0 items-center gap-3 text-ink no-underline", className]}
+>
+  <span
+    class="flex items-center justify-center rounded-[25%] bg-brand transition-transform duration-200 ease-[var(--ease-out-soft)] group-hover:-rotate-3"
+    style={`width:${size}px;height:${size}px`}
+  >
+    <Image
+      src={pince}
+      alt=""
+      width={inner * 2}
+      height={inner * 2}
+      densities={[1, 2]}
+      loading="eager"
+      class="object-contain"
+      style={`width:${inner}px;height:${inner}px`}
+    />
+  </span>
+  {
+    wordmark && (
+      <span class="font-bold tracking-[-0.01em]" style={`font-size:${wordmarkSize}`}>
+        {SITE.name}
+      </span>
+    )
+  }
+</Tag>

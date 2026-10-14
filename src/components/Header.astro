@@ -1,0 +1,116 @@
+---
+import Logo from "./Logo.astro";
+import Button from "./Button.astro";
+import Icon from "./Icon.astro";
+import { NAV, LINKS } from "../config/site";
+
+export interface Props {
+  /** `wide` matches the docs shell (1280px), `site` the marketing pages (1120px). */
+  width?: "site" | "wide";
+}
+
+const { width = "site" } = Astro.props;
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+---
+
+<header
+  class="sticky top-0 z-50 w-full border-b border-line bg-bg/85 backdrop-blur-md supports-[not(backdrop-filter:blur(0))]:bg-bg"
+>
+  <nav
+    class:list={[
+      "flex items-center justify-between gap-4 py-[1.125rem]",
+      width === "wide" ? "container-wide" : "container-site",
+    ]}
+    aria-label="Main"
+  >
+    <Logo size={36} />
+
+    <!-- Desktop -->
+    <div class="hidden items-center gap-6 md:flex">
+      {
+        NAV.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+            class="text-[0.9375rem] text-ink-muted no-underline transition-colors hover:text-ink aria-[current=page]:text-ink aria-[current=page]:underline aria-[current=page]:decoration-brand aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <Button href={LINKS.github} variant="light" size="sm" external>GitHub</Button>
+    </div>
+
+    <!-- Mobile trigger -->
+    <button
+      type="button"
+      id="nav-toggle"
+      class="flex size-11 items-center justify-center rounded-lg border border-line text-ink-muted md:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      aria-label="Open the menu"
+    >
+      <span class="sr-only">Menu</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+    </button>
+  </nav>
+
+  <div id="mobile-nav" hidden class="border-t border-line bg-bg md:hidden">
+    <div class="container-site flex flex-col gap-1 py-4">
+      {
+        NAV.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+            class="flex min-h-11 items-center rounded-lg px-3 text-base text-ink-muted no-underline aria-[current=page]:bg-surface aria-[current=page]:text-ink"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href={LINKS.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex min-h-11 items-center gap-2 rounded-lg px-3 text-base text-ink-muted no-underline"
+      >
+        GitHub
+        <Icon name="arrow-right" size={16} />
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("nav-toggle");
+  const panel = document.getElementById("mobile-nav");
+
+  if (toggle && panel) {
+    const setOpen = (open: boolean) => {
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close the menu" : "Open the menu");
+    };
+
+    toggle.addEventListener("click", () => {
+      setOpen(panel.hidden);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !panel.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    // A resize into the desktop layout should not leave the panel stranded open.
+    const wide = window.matchMedia("(min-width: 48rem)");
+    wide.addEventListener("change", (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+</script>

@@ -1,0 +1,317 @@
+---
+import { Picture } from "astro:assets";
+import pince from "../assets/pince.png";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import Terminal from "../components/Terminal.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { LINKS } from "../config/site";
+import { breadcrumbsLd, howToLd, softwareApplicationLd } from "../lib/jsonld";
+
+const requirements = ["Linux x86_64 · aarch64", "systemd (or a log file)", "Rust 1.75+ to build", "root to install"];
+
+const routes = [
+  {
+    name: "build on the server",
+    badge: "simplest",
+    code: `$ git clone https://github.com/fllottie/gabier
+$ cd gabier
+$ cargo build --release
+$ sudo ./install.sh`,
+    note: "Needs a Rust toolchain on the box.",
+  },
+  {
+    name: "static build elsewhere",
+    badge: null,
+    code: `$ docker run --rm -v "$PWD:/app" -w /app rust:1-slim sh -c \\
+    "rustup target add x86_64-unknown-linux-musl && \\
+     cargo build --release --target x86_64-unknown-linux-musl"
+$ scp target/x86_64-unknown-linux-musl/release/gabier vps:/tmp/
+$ ssh vps 'cd gabier && sudo ./install.sh /tmp/gabier'`,
+    note: "Fully static. No Rust on the server.",
+  },
+];
+
+const configSteps = `$ sudo nano /etc/gabier/config.toml   # paste webhook_url
+
+# or keep the secret out of the config entirely:
+$ echo 'GABIER_DISCORD_WEBHOOK=https://discord.com/api/webhooks/...' \\
+    | sudo tee /etc/gabier/env >/dev/null
+$ sudo chmod 600 /etc/gabier/env`;
+
+const verifySteps = `$ sudo -u gabier gabier check --config /etc/gabier/config.toml
+config    /etc/gabier/config.toml
+serveur   vps-prod-1
+source    journald (ssh, sshd)
+évènements accepted=true failed=true invalid_user=true closed=false
+anti-spam 1 échec(s) par IP, puis résumé toutes les 300s
+discord   https://discord.com/api/webhooks/123/abcd…
+          joignable
+
+Tout est prêt.
+$ sudo -u gabier gabier test --config /etc/gabier/config.toml
+$ sudo systemctl start gabier
+$ sudo journalctl -u gabier -f`;
+
+const upgradeSteps = `$ git pull && cargo build --release
+$ sudo ./install.sh            # keeps your existing config.toml
+$ sudo systemctl restart gabier`;
+
+const uninstallSteps = `$ sudo systemctl disable --now gabier
+$ sudo rm /etc/systemd/system/gabier.service \\
+    /usr/local/bin/gabier
+$ sudo rm -r /etc/gabier       # holds your webhook
+$ sudo userdel gabier`;
+
+const installed = [
+  ["/usr/local/bin/gabier", "The binary."],
+  ["/etc/gabier/config.toml", "Your config, mode <code>0640</code>, owned by <code>root:gabier</code>. Never overwritten on reinstall."],
+  ["/etc/gabier/env", "Optional. Webhook secrets, read by the unit. Create it yourself with mode <code>600</code>."],
+  ["/etc/systemd/system/gabier.service", "The hardened unit, enabled at boot."],
+  ["user <code>gabier</code>", "A system account with no shell and no home."],
+];
+
+const distros = [
+  ["Debian / Ubuntu", "ssh", "/var/log/auth.log", "Default config works as is."],
+  ["Fedora / RHEL / Alma / Rocky", "sshd", "/var/log/secure", "Default config works as is."],
+  ["Arch", "sshd", "journald only", "Default config works as is."],
+  ["Alpine (OpenRC)", "—", "/var/log/messages", 'Use <code>kind = "file"</code> and write your own OpenRC script; <code>install.sh</code> needs systemd.'],
+  ["Ubuntu 24.04 with socket activation", "ssh", "—", "sshd still logs under <code>ssh</code>; nothing to change."],
+];
+
+const jsonLd = [
+  softwareApplicationLd(),
+  breadcrumbsLd([
+    { name: "Home", path: "/" },
+    { name: "Install", path: "/install/" },
+  ]),
+  howToLd({
+    name: "Install Gabier on a Linux server",
+    description:
+      "Build the Gabier binary, run install.sh to create the service account and the hardened unit, paste a Discord or Slack webhook, then start the service.",
+    steps: [
+      {
+        name: "Build the binary",
+        text: "Clone the repository and run `cargo build --release`, or cross-compile a static musl binary with Docker and copy it over.",
+      },
+      {
+        name: "Run the installer",
+        text: "`sudo ./install.sh` creates the gabier system account, installs the binary to /usr/local/bin, the hardened unit to /etc/systemd/system, and an example config to /etc/gabier/config.toml.",
+      },
+      {
+        name: "Paste a webhook",
+        text: "Edit /etc/gabier/config.toml, or put GABIER_DISCORD_WEBHOOK in /etc/gabier/env with mode 600.",
+      },
+      {
+        name: "Verify and start",
+        text: "Run `gabier check` to validate the config and reach the webhook without posting, then `gabier test` and `systemctl start gabier`.",
+      },
+    ],
+  }),
+];
+---
+
+<BaseLayout
+  title="Install"
+  description="Install Gabier in two minutes: build with cargo or cross-compile a static musl binary, run install.sh for the hardened systemd unit, paste one webhook. Notes for Debian, Ubuntu, Fedora, Arch and Alpine."
+  image="/og/install.png"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="w-full">
+    <div class="container-site flex flex-wrap items-center gap-10 pt-16 pb-12">
+      <div class="flex min-w-0 flex-[999_1_26.25rem] flex-col gap-5">
+        <p class="eyebrow m-0">Install</p>
+        <h1 class="m-0 text-title text-ink">Two minutes to a running lookout.</h1>
+        <p class="m-0 max-w-[35rem] text-lead text-ink-muted">
+          Build the binary, run the installer, paste one webhook. Pince takes it from there.
+        </p>
+        <ul class="m-0 flex list-none flex-wrap gap-2 p-0">
+          {requirements.map((item) => <li class="pill">{item}</li>)}
+        </ul>
+      </div>
+      <div class="flex min-w-0 flex-[1_1_15rem] justify-center">
+        <Picture
+          src={pince}
+          formats={["avif", "webp"]}
+          widths={[240, 300, 600]}
+          sizes="(max-width: 48rem) 50vw, 300px"
+          alt="Pince, the crab topman, waving from his crow's nest"
+          loading="eager"
+          class="h-auto w-full max-w-[18.75rem] object-contain"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 1 -->
+  <Section divider space="md">
+    <div class="flex flex-col gap-7">
+      <div class="flex flex-col gap-2.5">
+        <p class="step-label m-0">Step 1</p>
+        <h2 class="m-0 text-h2 text-ink">Build and install</h2>
+        <p class="m-0 max-w-[44rem] leading-relaxed text-ink-muted">
+          Gabier is not on crates.io yet, so both routes start from the repository. Either way,
+          <a href={LINKS.installScript} target="_blank" rel="noopener noreferrer" class="text-brand-soft underline decoration-brand-soft/40 underline-offset-[3px] hover:text-brand-bright">
+            <code class="code-chip">install.sh</code>
+          </a> finishes the job.
+        </p>
+      </div>
+      <div class="grid items-stretch gap-4 lg:grid-cols-2">
+        {
+          routes.map((route) => (
+            <Terminal
+              code={route.code}
+              lang="shellsession"
+              label={route.name}
+              note={route.note}
+              highlight={Boolean(route.badge)}
+              class="h-full"
+            />
+          ))
+        }
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <h3 class="m-0 text-h3 text-ink">What the installer puts where</h3>
+        <dl class="m-0 overflow-hidden rounded-xl border border-line bg-surface">
+          {
+            installed.map(([path, what]) => (
+              <div class="flex flex-wrap items-baseline gap-x-5 gap-y-1 border-b border-line px-4 py-3 last:border-b-0">
+                <dt class="rich-text flex-[0_0_18rem] font-mono text-[0.8125rem] text-brand-soft" set:html={path} />
+                <dd class="rich-text m-0 min-w-0 flex-1 text-[0.9375rem] leading-snug text-ink-muted" set:html={what} />
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Step 2 -->
+  <Section tone="elevated" space="md">
+    <div class="flex flex-wrap items-start gap-12">
+      <div class="flex min-w-0 flex-[1_1_21.25rem] flex-col gap-3.5">
+        <p class="step-label m-0">Step 2</p>
+        <h2 class="m-0 text-h2 text-ink">Create a webhook and paste it</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          <strong class="font-bold text-ink">Discord:</strong> channel settings → Integrations → Webhooks → New
+          webhook. Copy the URL.
+        </p>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          <strong class="font-bold text-ink">Slack:</strong>
+          <a
+            href="https://api.slack.com/apps"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-brand-soft underline decoration-brand-soft/40 underline-offset-[3px] hover:text-brand-bright"
+            >api.slack.com/apps</a
+          > → your app → Incoming Webhooks → Add New Webhook to Workspace. Copy the URL.
+        </p>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          One of the two sections is enough; both is fine, and then each notification goes to both.
+        </p>
+      </div>
+      <Terminal code={configSteps} lang="shellsession" label="shell" class="flex-[1_1_25rem] !bg-bg" />
+    </div>
+  </Section>
+
+  <!-- Step 3 -->
+  <Section space="md">
+    <div class="flex flex-wrap items-start gap-12">
+      <Terminal code={verifySteps} lang="shellsession" label="shell" class="flex-[1_1_25rem]" />
+      <div class="flex min-w-0 flex-[1_1_21.25rem] flex-col gap-3.5">
+        <p class="step-label m-0">Step 3</p>
+        <h2 class="m-0 text-h2 text-ink">Verify, then start</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          <code class="code-chip">check</code> validates the config and actually reaches every webhook, with
+          the token masked and nothing posted to your channel. <code class="code-chip">test</code> then posts
+          one real message.
+        </p>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          Now log in over SSH from another machine. Your channel should light up within a second.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Distro notes -->
+  <Section tone="elevated" space="md">
+    <div class="flex flex-col gap-6">
+      <h2 class="m-0 text-h2 text-ink">Distribution notes</h2>
+      <p class="m-0 max-w-[44rem] leading-relaxed text-ink-muted">
+        The default <code class="code-chip">units = ["ssh", "sshd"]</code> follows both, and journalctl ignores
+        the one that does not exist — so on every systemd distribution there is nothing to change.
+      </p>
+      <div class="overflow-x-auto rounded-xl border border-line bg-bg">
+        <table class="w-full border-collapse text-left">
+          <caption class="sr-only">Which sshd unit and log file to use on each distribution</caption>
+          <thead>
+            <tr>
+              {
+                ["Distribution", "sshd unit", "Log file (if not journald)", "Note"].map((head) => (
+                  <th
+                    scope="col"
+                    class="border-b border-line px-3.5 py-3 font-mono text-[0.8125rem] font-medium tracking-[0.08em] text-ink-dim uppercase"
+                  >
+                    {head}
+                  </th>
+                ))
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {
+              distros.map(([name, unit, log, note]) => (
+                <tr>
+                  <th scope="row" class="border-b border-line px-3.5 py-3.5 text-left text-[0.9375rem] font-bold text-ink">
+                    {name}
+                  </th>
+                  <td class="rich-text border-b border-line px-3.5 py-3.5 text-[0.9375rem] text-ink-muted">
+                    {unit === "—" ? unit : <code>{unit}</code>}
+                  </td>
+                  <td class="rich-text border-b border-line px-3.5 py-3.5 text-[0.9375rem] text-ink-muted">
+                    {log.startsWith("/") ? <code>{log}</code> : log}
+                  </td>
+                  <td
+                    class="rich-text border-b border-line px-3.5 py-3.5 text-[0.9375rem] leading-relaxed text-ink-muted"
+                    set:html={note}
+                  />
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Upgrade / uninstall -->
+  <Section space="md">
+    <div class="grid gap-8 md:grid-cols-2">
+      <div class="flex min-w-0 flex-col gap-3">
+        <h2 class="m-0 text-2xl leading-tight font-bold tracking-[-0.02em] text-ink">Upgrade</h2>
+        <Terminal code={upgradeSteps} lang="shellsession" label="shell" />
+        <p class="m-0 text-sm leading-relaxed text-ink-dim">
+          Re-running the installer is the upgrade path: it replaces the binary and the unit, and leaves your
+          config alone.
+        </p>
+      </div>
+      <div class="flex min-w-0 flex-col gap-3">
+        <h2 class="m-0 text-2xl leading-tight font-bold tracking-[-0.02em] text-ink">Uninstall</h2>
+        <Terminal code={uninstallSteps} lang="shellsession" label="shell" />
+        <p class="m-0 text-sm leading-relaxed text-ink-dim">
+          Nothing else is written anywhere. Pince leaves no footprints.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <CtaBand
+    title="Something did not work?"
+    subtitle="The docs have a troubleshooting section, and issues are welcome."
+    primary={{ href: "/docs/troubleshooting/", label: "Troubleshooting" }}
+    secondary={{ href: LINKS.issues, label: "Open an issue", external: true }}
+  />
+</BaseLayout>

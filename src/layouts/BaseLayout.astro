@@ -1,0 +1,87 @@
+---
+import "../styles/global.css";
+import Seo from "../components/Seo.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE } from "../config/site";
+import type { Props as SeoProps } from "../components/Seo.astro";
+
+export interface Props extends SeoProps {
+  width?: "site" | "wide";
+  /** Docs pages render their own shell, so they skip the marketing footer. */
+  footer?: boolean;
+  bodyClass?: string;
+}
+
+const { width = "site", footer = true, bodyClass = "", ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang={SITE.lang} class="scroll-smooth">
+  <head>
+    <Seo {...seo} />
+  </head>
+  <body class:list={["flex min-h-screen flex-col bg-bg text-ink", bodyClass]}>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <Header width={width} />
+
+    <main id="main" class="flex w-full flex-1 flex-col">
+      <slot />
+    </main>
+
+    {footer && <Footer />}
+
+    <script>
+      /**
+       * One listener for every copy affordance on the page.
+       *  - [data-clipboard="text"] copies that literal text.
+       *  - [data-clipboard-pre]    copies the <pre> in the same block, with
+       *                            shell prompts and trailing comments stripped
+       *                            so the result is paste-ready.
+       */
+      const PROMPT = /^\s*[$#]\s+/;
+
+      function commandsFrom(pre: HTMLElement): string {
+        const lines = (pre.innerText ?? "").replace(/\n+$/, "").split("\n");
+        const prompted = lines.filter((line) => PROMPT.test(line));
+        const source = prompted.length > 0 ? prompted : lines;
+        return source
+          .map((line) => line.replace(PROMPT, "").replace(/\s{2,}#.*$/, "").trimEnd())
+          .join("\n");
+      }
+
+      async function flash(button: HTMLElement, text: string) {
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          return; // No clipboard permission (or no secure context): fail quietly.
+        }
+        const label = button.querySelector("[data-clipboard-label]") ?? button;
+        const previous = label.textContent;
+        button.classList.add("!border-accent", "!text-accent");
+        if (label !== button) label.textContent = "Copied";
+        button.setAttribute("aria-live", "polite");
+        window.setTimeout(() => {
+          button.classList.remove("!border-accent", "!text-accent");
+          if (label !== button && previous !== null) label.textContent = previous;
+        }, 1600);
+      }
+
+      document.addEventListener("click", (event) => {
+        const target = event.target as HTMLElement | null;
+        const button = target?.closest<HTMLElement>("[data-clipboard], [data-clipboard-pre]");
+        if (!button) return;
+
+        const literal = button.getAttribute("data-clipboard");
+        if (literal !== null) {
+          void flash(button, literal);
+          return;
+        }
+
+        const pre = button.closest<HTMLElement>("[data-terminal]")?.querySelector("pre");
+        if (pre) void flash(button, commandsFrom(pre));
+      });
+    </script>
+  </body>
+</html>

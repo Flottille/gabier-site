@@ -1,0 +1,87 @@
+---
+title: Throttling
+navTitle: Throttling
+eyebrow: Reference
+description: How Gabier keeps a port-22 scan out of your channel — per-IP burst limits, windowed summaries of refused attempts, and why successful logins are never grouped.
+group: Reference
+order: 2
+---
+
+import Callout from "../../components/Callout.astro";
+
+This is the one part of Gabier that is not obvious, and the reason a notifier like this is worth writing at
+all.
+
+A VPS with port 22 open takes thousands of attempts a day. Notify every one of them and the channel is
+unreadable — which means you miss the single notification that actually matters.
+
+## The rule
+
+Per source IP: the first `burst` failures go out immediately, the rest are counted and summarised in one
+message at the end of the window.
+
+```toml
+[throttle]
+window_secs = 300   # the window, per IP
+burst = 1           # failures sent in full before grouping kicks in
+```
+
+With the defaults, one scanner produces exactly two messages in five minutes: the first attempt, then a
+summary.
+
+```
+🚨 Rafale de tentatives SSH
+43 tentatives refusées depuis 185.243.96.107.
+Comptes visés  admin, oracle, postgres, test, ubuntu
+```
+
+<Callout title="Successful logins are never grouped.">
+  Throttling only ever applies to failures and invalid-user attempts. An accepted login is always sent on its
+  own, immediately — that is the event you are paying attention for.
+</Callout>
+
+## Choosing the numbers
+
+| Situation | `burst` | `window_secs` |
+| --- | --- | --- |
+| Personal VPS, port 22 exposed | `1` | `300` (default) |
+| You want a feel for the noise | `3` | `300` |
+| Very noisy host, you only want a digest | `0` | `900` |
+| Lab box, you want everything | high | low |
+
+`burst = 0` means no failure is ever sent in full: you get the summary and nothing else.
+
+A longer window means fewer, larger messages. A shorter one reacts faster but produces more of them. Five
+minutes is the balance for a server that is attacked continuously but rarely interesting.
+
+## What it is not
+
+Throttling is about your attention, not about the server's safety. Gabier observes, it never blocks. Keep
+`fail2ban` alongside it — the two do different jobs:
+
+- **fail2ban** ends the attempts.
+- **Gabier** tells you the one that succeeded.
+
+## A known under-count
+
+sshd allows three password attempts per connection, on the same source port. Gabier's deduplication folds
+those into a single notification — deliberate, for the noise — but the burst counter folds them too, so the
+number in a summary can be lower than the raw line count in your journal.
+
+If you need the exact figure, the journal has it:
+
+```shellsession
+$ journalctl -u ssh --since "1 hour ago" | grep -c "Failed password"
+```
+
+## Seeing it work without waiting for a scan
+
+`replay` runs the whole pipeline over a log file and prints what would have been sent:
+
+```shellsession
+$ gabier replay tests/fixtures/auth.log --dry-run --config config.example.toml
+
+412 lignes, 180 évènements, 7 notifications, 173 échecs regroupés.
+```
+
+That last line is the throttle doing its job: 180 events became 7 messages.

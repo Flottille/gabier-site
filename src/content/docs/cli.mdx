@@ -1,0 +1,109 @@
+---
+title: CLI
+eyebrow: Reference
+description: The Gabier subcommands — run, test, check and replay — plus the global --config and --dry-run flags, config lookup order and the logging environment variables.
+group: Reference
+order: 3
+---
+
+import Callout from "../../components/Callout.astro";
+
+Four subcommands. `run` is the default, which is what the systemd unit calls.
+
+| Command | What it does |
+| --- | --- |
+| `gabier` | Watch the logs. Same as `gabier run`. |
+| `gabier run --quiet-start` | Watch, without the "surveillance started" notification. |
+| `gabier test` | Post one test message on every configured destination. |
+| `gabier check` | Validate the config and reach every webhook, without publishing anything. |
+| `gabier replay <file>` | Run a log file through the whole pipeline. |
+
+Two flags are global, valid on every subcommand:
+
+| Flag | Effect |
+| --- | --- |
+| `-c, --config <path>` | Config file. Otherwise `./config.toml`, then `/etc/gabier/config.toml`. |
+| `--dry-run` | Print notifications instead of sending them. |
+
+## run
+
+```shellsession
+$ sudo -u gabier gabier run --config /etc/gabier/config.toml
+gabier démarre host=vps-prod-1 source=journald vers=discord+slack
+```
+
+Runs until `SIGTERM` or `Ctrl-C`, flushing any pending burst summary on the way out. On start it announces
+itself in the channel, which is how you know the service came back after a reboot — pass `--quiet-start` to
+suppress that.
+
+## test
+
+```shellsession
+$ sudo -u gabier gabier test --config /etc/gabier/config.toml
+Envoyé. Regarde ton salon Discord.
+```
+
+Posts one real message per destination and exits non-zero if nothing left. Use it right after pasting a
+webhook: it proves the URL, the network path and the channel permissions in one shot.
+
+## check
+
+```shellsession
+$ sudo -u gabier gabier check --config /etc/gabier/config.toml
+config    /etc/gabier/config.toml
+serveur   vps-prod-1
+source    journald (ssh, sshd)
+évènements accepted=true failed=true invalid_user=true closed=false
+anti-spam 1 échec(s) par IP, puis résumé toutes les 300s
+geoip     false
+discord   https://discord.com/api/webhooks/123/abcd…
+          joignable
+
+Tout est prêt.
+```
+
+Parses the config, prints it with the webhook token masked, and probes every destination — without posting
+anything to the channel. It reports *all* the broken destinations rather than stopping at the first, and exits
+non-zero if any failed:
+
+```shellsession
+$ sudo -u gabier gabier check && sudo systemctl restart gabier
+```
+
+## replay
+
+```shellsession
+$ gabier replay tests/fixtures/auth.log --dry-run --config config.example.toml
+
+412 lignes, 180 évènements, 7 notifications, 173 échecs regroupés.
+```
+
+Feeds a log file through the parser, the filters and the throttle. With `--dry-run` nothing is sent, so it is
+the safe way to see how a config behaves against real traffic before you commit to it — and the fastest way
+to check that your distribution's log format is parsed correctly.
+
+<Callout title="Point it at your own logs.">
+  <code>gabier replay /var/log/auth.log --dry-run</code> on a server that has been up for a while tells you
+  exactly how loud your channel would be.
+</Callout>
+
+## Config lookup
+
+With no `--config`, in order:
+
+1. `./config.toml`
+2. `/etc/gabier/config.toml`
+
+The first one that exists wins. If neither does, Gabier exits with
+`pas de config trouvée, passe --config`.
+
+## Environment
+
+| Variable | Effect |
+| --- | --- |
+| `RUST_LOG` | Log filter. `gabier=debug` logs the decisions; the default is `info`. |
+| `GABIER_DISCORD_WEBHOOK` | Supplies `discord.webhook_url`. |
+| `GABIER_SLACK_WEBHOOK` | Supplies `slack.webhook_url`. |
+| `JOURNAL_STREAM` | Set by systemd. Gabier notices and drops its own timestamps and colours, since journald adds them. |
+
+Logs go to stderr, so `journalctl -u gabier -f` is the right way to read them under systemd.

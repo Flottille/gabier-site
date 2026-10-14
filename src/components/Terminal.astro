@@ -1,0 +1,70 @@
+---
+import { Code } from "astro:components";
+import Icon from "./Icon.astro";
+import { gabierDark } from "../config/shiki-theme";
+
+export interface Props {
+  /** Source to highlight. Omit it and pass markup through the slot instead. */
+  code?: string;
+  lang?: string;
+  /** Shown in the window chrome: "shell", a file path, a unit name… */
+  label?: string;
+  copy?: boolean;
+  /** Footnote under the block. */
+  note?: string;
+  /** Draw attention to this block (used for the recommended install route). */
+  highlight?: boolean;
+  class?: string;
+}
+
+const {
+  code,
+  lang = "shellsession",
+  label,
+  copy = true,
+  note,
+  highlight = false,
+  class: className = "",
+} = Astro.props;
+
+const showChrome = Boolean(label) || copy;
+---
+
+<div
+  data-terminal
+  class:list={[
+    "flex min-w-0 flex-col overflow-hidden rounded-xl border bg-surface",
+    highlight ? "border-accent" : "border-line",
+    className,
+  ]}
+>
+  {
+    showChrome && (
+      <div class="flex items-center justify-between gap-3 border-b border-line px-3.5 py-2 font-mono text-xs text-ink-dim">
+        <span class="min-w-0 truncate">{label}</span>
+        {copy && (
+          <button
+            type="button"
+            data-clipboard-pre
+            class="flex min-h-7 shrink-0 cursor-pointer items-center gap-1.5 rounded-md border border-line px-2.5 py-1 font-mono text-xs text-ink-muted transition-colors hover:border-ink-dim hover:text-ink"
+          >
+            <Icon name="copy" size={12} />
+            <span data-clipboard-label>Copy</span>
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  <div class="min-w-0 flex-1 overflow-x-auto">
+    {
+      code ? (
+        <Code code={code.trim()} lang={lang as any} theme={gabierDark} class="!bg-transparent p-4 !text-sm !leading-[1.7]" />
+      ) : (
+        <pre class="m-0 p-4 font-mono text-sm leading-[1.7] whitespace-pre text-ink"><slot /></pre>
+      )
+    }
+  </div>
+
+  {note && <p class="m-0 border-t border-line px-4 py-3 text-[0.8125rem] text-ink-dim">{note}</p>}
+</div>

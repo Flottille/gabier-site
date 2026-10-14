@@ -1,0 +1,50 @@
+---
+import { Picture } from "astro:assets";
+import pince from "../assets/pince.png";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/Button.astro";
+import { NAV } from "../config/site";
+---
+
+<BaseLayout
+  title="Page not found"
+  description="That page is not in the crow's nest. Head back to the landing page, the install guide or the documentation."
+  noindex
+>
+  <section class="w-full">
+    <div class="container-site flex flex-wrap items-center gap-12 py-18">
+      <div class="flex min-w-0 flex-[999_1_22.5rem] flex-col gap-5">
+        <p class="eyebrow m-0">Error 404</p>
+        <h1 class="m-0 text-title text-ink">Pince cannot see that page from up here.</h1>
+        <p class="m-0 max-w-[32.5rem] text-lead text-ink-muted">
+          The address does not match anything on the site. It may have moved when the docs were split into
+          sections.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <Button href="/" variant="primary">Back to the landing page</Button>
+          <Button href="/docs/" variant="outline">Documentation</Button>
+        </div>
+        <nav aria-label="Elsewhere on the site" class="mt-2 flex flex-wrap gap-x-5 gap-y-2">
+          {
+            NAV.map((item) => (
+              <a href={item.href} class="text-[0.9375rem] text-brand-soft no-underline hover:text-brand-bright">
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+      <div class="flex min-w-0 flex-[1_1_15rem] justify-center">
+        <Picture
+          src={pince}
+          formats={["avif", "webp"]}
+          widths={[240, 320]}
+          sizes="(max-width: 48rem) 50vw, 300px"
+          alt="Pince, the crab topman, scanning an empty horizon"
+          class="h-auto w-full max-w-[18.75rem] object-contain opacity-80"
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

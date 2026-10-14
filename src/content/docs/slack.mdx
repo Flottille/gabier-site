@@ -1,0 +1,74 @@
+---
+title: Slack
+eyebrow: Channels
+description: Create a Slack incoming webhook for Gabier, keep the token in the environment file, and use Slack's own mention syntax for pings on SSH logins and burst summaries.
+group: Channels
+order: 2
+---
+
+import Callout from "../../components/Callout.astro";
+
+Slack uses an incoming webhook from an app you own. Gabier posts a coloured attachment, so the message carries
+the same information as the Discord embed and still reads as plain text in a push notification.
+
+## Create the webhook
+
+1. Create an app at [api.slack.com/apps](https://api.slack.com/apps) → **Incoming Webhooks** → turn it on.
+2. **Add New Webhook to Workspace**, pick the channel, copy the URL.
+3. Put it in the config, or export `GABIER_SLACK_WEBHOOK`, then run `gabier check`.
+
+```toml
+[slack]
+webhook_url = "https://hooks.slack.com/services/T000/B000/xxxx"
+username = "Gabier"
+ping = "<!channel>"
+ping_on_accepted = false
+ping_on_failure = true
+```
+
+<Callout title="The channel is fixed by the webhook.">
+  A Slack incoming webhook is bound to the channel you chose when you created it. There is no channel key in
+  the config: to post somewhere else, create another webhook.
+</Callout>
+
+## Pings
+
+Slack has its own escape syntax, and it must be written exactly like this — a plain `@thibault` does not
+resolve:
+
+| Value | Pings |
+| --- | --- |
+| `<@U0123ABCD>` | One user, by member ID. |
+| `<!subteam^S0123ABCD>` | A user group, by its ID. |
+| `<!channel>` | Every member of the channel. |
+| `<!here>` | Everyone currently active in the channel. |
+
+A member ID is under the member's profile → **More** → **Copy member ID**.
+
+As on Discord, `ping_on_accepted` and `ping_on_failure` decide when it fires, and both default to `false`.
+The ping is only ever put in the message `text` when you configured one explicitly, so a log line can never
+turn into a channel-wide mention.
+
+## Running both destinations
+
+`[discord]` and `[slack]` can both be present. Every notification then goes to both, independently — if one
+is down, the other still gets through, and `gabier check` tells you which is which:
+
+```shellsession
+$ sudo -u gabier gabier check
+discord   https://discord.com/api/webhooks/123/abcd…
+          joignable
+slack     https://hooks.slack.com/services/T000/B000/xxxx…
+          ✗ channel_not_found
+1 destination(s) à corriger
+```
+
+## If Slack replies with an error
+
+| Response | Meaning |
+| --- | --- |
+| `invalid_payload` | Malformed body — usually a `ping` written in Discord syntax. |
+| `channel_not_found` | The app cannot post in that channel; reinstall the app or create a new webhook. |
+| `no_service` | The webhook was revoked. Create a new one. |
+
+`gabier check` prints Slack's response verbatim, which is the fastest way to see which of these it is.

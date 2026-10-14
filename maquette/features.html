@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabier — Features</title>
+<meta name="description" content="Everything Gabier does, and a few things it refuses to do.">
+<link rel="icon" type="image/png" href="assets/pince.png">
+<meta property="og:title" content="Gabier — Features">
+<meta property="og:description" content="Everything Gabier does, and a few things it refuses to do.">
+<meta property="og:image" content="assets/pince.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+body{margin:0;font-family:'Space Grotesk',system-ui,sans-serif;color:#F4EFE6;background:#0F1B2D}
+a{color:#F2A27A}a:hover{color:#FFC7A8}
+code{font-family:'IBM Plex Mono',monospace;font-size:0.92em;background:#132238;border:1px solid #22344F;border-radius:5px;padding:1px 6px;color:#F4EFE6}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8CA3;padding:12px 14px;border-bottom:1px solid #22344F;font-family:'IBM Plex Mono',monospace;font-weight:500}
+td{padding:14px;border-bottom:1px solid #22344F;font-size:15px;line-height:1.5;color:#BFC9D8;vertical-align:top}
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; background: #0F1B2D; display: flex; flex-direction: column">
+
+  <header style="width: 100%; box-sizing: border-box; border-bottom: 1px solid #22344F">
+    <nav style="max-width: 1120px; margin: 0 auto; padding: 18px 24px; box-sizing: border-box; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+      <a href="index.html" style="display: flex; flex-direction: row; align-items: center; gap: 12px; text-decoration: none; color: #F4EFE6">
+        <span style="width: 36px; height: 36px; border-radius: 9px; background: #E8613A; display: flex; align-items: center; justify-content: center"><img src="assets/pince.png" alt="" style="width: 32px; height: 32px; object-fit: contain"></span>
+        <span style="font-weight: 700; font-size: 20px; letter-spacing: -0.01em">Gabier</span>
+      </a>
+      <div style="display: flex; flex-direction: row; gap: 24px; align-items: center; flex-wrap: wrap">
+        <a href="features.html" aria-current="page" style="font-size: 15px; color: #F4EFE6; text-decoration: none; border-bottom: 2px solid #E8613A; padding-bottom: 2px">Features</a>
+        <a href="how-it-works.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none">How it works</a>
+        <a href="install.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Install</a>
+        <a href="docs/" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Docs</a>
+        <a href="https://github.com/[TON_USER]/gabier" style="font-size: 14px; font-weight: 700; color: #0F1B2D; background: #F4EFE6; border-radius: 8px; padding: 10px 16px; text-decoration: none; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">GitHub</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 72px 24px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; max-width: 760px">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: #2BB5A0">Features</div>
+      <h1 style="margin: 0; font-size: 56px; line-height: 1.02; font-weight: 700; letter-spacing: -0.03em">Everything a lookout needs. Nothing he doesn't.</h1>
+      <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #BFC9D8">Gabier is deliberately small. Here is the full list of what it does, and a few things it refuses to do.</p>
+    </div>
+  </section>
+
+  <!-- Feature 1: real time -->
+  <section style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: center">
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">01 · Real time</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Within a second of the login</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Gabier streams the sshd journal (<code>journalctl -f</code>) or tails a log file with rotation handling. There is no polling interval to tune: a line is read the moment sshd writes it, and the webhook request leaves on a separate task so a slow Discord never blocks the next line.</p>
+      </div>
+      <div style="flex: 1 1 360px; min-width: 0; background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 18px 20px; box-sizing: border-box; overflow-x: auto">
+        <pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.7; color: #BFC9D8; white-space: pre"><span style="color: #7C8CA3">20:01:02.114</span> sshd: Accepted publickey for thibault from 203.0.113.7 …
+<span style="color: #7C8CA3">20:01:02.118</span> <span style="color: #2BB5A0">gabier</span>: event detected  user=thibault ip=203.0.113.7
+<span style="color: #7C8CA3">20:01:02.391</span> <span style="color: #2BB5A0">gabier</span>: discord notification sent  <span style="color: #F2A27A">273 ms</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 2: channels -->
+  <section style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: center">
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: row; flex-wrap: wrap; gap: 16px">
+        <div style="flex: 1 1 200px; min-width: 0; background: #0F1B2D; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 10px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #5865F2"></span><span style="font-weight: 700">Discord</span></div>
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #BFC9D8">Rich embed, colored by event. Custom name and avatar. Mention a user, a role or <code>@here</code>.</p>
+        </div>
+        <div style="flex: 1 1 200px; min-width: 0; background: #0F1B2D; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 10px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #2BB5A0"></span><span style="font-weight: 700">Slack</span></div>
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #BFC9D8">Block Kit message with a plain-text fallback for push. Target channel override. <code>&lt;!here&gt;</code> and user-group mentions.</p>
+        </div>
+        <div style="flex: 1 1 200px; min-width: 0; border: 1px dashed #3A4F6E; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 10px"><span style="width: 10px; height: 10px; border-radius: 5px; border: 1px solid #7C8CA3; box-sizing: border-box"></span><span style="font-weight: 700; color: #BFC9D8">Telegram · ntfy · email</span></div>
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #7C8CA3">On the roadmap. The <code>Notifier</code> trait is one file per channel.</p>
+        </div>
+      </div>
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">02 · Channels</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Discord and Slack, by webhook</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">No bot to invite, no OAuth dance, no token with broad scopes. A webhook URL is all Gabier needs, and it can post to both at the same time. Every channel receives every event; filtering happens upstream.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 3: noise control -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: center">
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">03 · Noise control</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">You decide what is worth a ping</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">By default only accepted logins get through: the one event that matters on a personal server. Turn on failures when you are hunting a brute-force, turn on disconnects when you want the full session story. Your own static IP and your cron accounts go in ignore lists, so the channel stays quiet when it is you.</p>
+      </div>
+      <div style="flex: 1 1 360px; min-width: 0; background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 18px 20px; box-sizing: border-box; overflow-x: auto">
+        <pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #F2A27A">[events]</span>
+accepted     = <span style="color: #2BB5A0">true</span>
+failed       = <span style="color: #2BB5A0">false</span>   <span style="color: #7C8CA3"># noisy on port 22</span>
+disconnected = <span style="color: #2BB5A0">false</span>
+ignore_users = [<span style="color: #2BB5A0">"backup"</span>, <span style="color: #2BB5A0">"deploy"</span>]
+ignore_ips   = [<span style="color: #2BB5A0">"203.0.113.7"</span>]</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 4: hardened -->
+  <section style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: center">
+      <div style="flex: 1 1 360px; min-width: 0; background: #0F1B2D; border: 1px solid #22344F; border-radius: 12px; padding: 18px 20px; box-sizing: border-box; overflow-x: auto">
+        <pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.7; color: #BFC9D8; white-space: pre"><span style="color: #F2A27A">[Service]</span>
+DynamicUser=yes
+SupplementaryGroups=systemd-journal
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryDenyWriteExecute=yes</pre>
+      </div>
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">04 · Hardened</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Least privilege, out of the box</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">A tool that watches your logins should not be a new way in. The shipped unit runs Gabier as a throwaway dynamic user with a read-only filesystem, no home, no capabilities and no executable memory. It can read the journal and open outbound HTTPS. That is the whole attack surface.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 5: one binary -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: center">
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">05 · Footprint</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">One static binary, a few megabytes</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Rust, rustls, no OpenSSL, no runtime. Copy the binary to any Linux box with sshd and systemd (or a log file) and it runs. Idle, it sits on a journal pipe and costs nothing.</p>
+      </div>
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: row; flex-wrap: wrap; gap: 16px">
+        <div style="flex: 1 1 140px; background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3">Binary</span><span style="font-size: 28px; font-weight: 700; color: #F4EFE6">[X] MB</span></div>
+        <div style="flex: 1 1 140px; background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3">RSS idle</span><span style="font-size: 28px; font-weight: 700; color: #F4EFE6">[X] MB</span></div>
+        <div style="flex: 1 1 140px; background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3">Runtime deps</span><span style="font-size: 28px; font-weight: 700; color: #2BB5A0">0</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 640px">
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Where Gabier sits</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Between the bash one-liner you never finished and the SIEM you do not want to run for one VPS.</p>
+      </div>
+      <div style="overflow-x: auto; border: 1px solid #22344F; border-radius: 12px; background: #0F1B2D">
+        <table>
+          <thead><tr><th></th><th>Shell script + curl</th><th style="color: #F2A27A">Gabier</th><th>Full monitoring stack</th></tr></thead>
+          <tbody>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Setup time</td><td>An evening, then forever</td><td style="color: #F4EFE6">2 minutes</td><td>A weekend</td></tr>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Log rotation, journald</td><td>Usually broken</td><td style="color: #F4EFE6">Handled</td><td>Handled</td></tr>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Runs as root</td><td>Usually</td><td style="color: #F4EFE6">No, dynamic user</td><td>Often, as an agent</td></tr>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Resources</td><td>Tiny</td><td style="color: #F4EFE6">Tiny</td><td>A dedicated host</td></tr>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Dashboards, history, search</td><td>No</td><td style="color: #F4EFE6">No, on purpose</td><td>Yes</td></tr>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Good for</td><td>One box, one afternoon</td><td style="color: #F4EFE6">Personal VPS, side projects, a handful of servers</td><td>Fleets and compliance</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- What it doesn't do -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+      <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">What Gabier will not do</h2>
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 16px">
+        <div style="flex: 1 1 260px; min-width: 0; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px"><span style="font-weight: 700">Block anyone</span><p style="margin: 0; font-size: 14px; line-height: 1.5; color: #BFC9D8">It watches and reports. Banning is fail2ban's job, and the two run well side by side.</p></div>
+        <div style="flex: 1 1 260px; min-width: 0; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px"><span style="font-weight: 700">Store history</span><p style="margin: 0; font-size: 14px; line-height: 1.5; color: #BFC9D8">Your journal already does. Gabier keeps no database and no state across restarts.</p></div>
+        <div style="flex: 1 1 260px; min-width: 0; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px"><span style="font-weight: 700">Phone home</span><p style="margin: 0; font-size: 14px; line-height: 1.5; color: #BFC9D8">The only outbound connections are the webhooks you configured. No telemetry, no update check.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 56px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px">
+      <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 24px; font-weight: 700">Ready to put Pince on watch?</span><span style="font-size: 15px; color: #BFC9D8">Two minutes, one webhook.</span></div>
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px">
+        <a href="install.html" style="font-size: 16px; font-weight: 700; color: #0F1B2D; background: #E8613A; border-radius: 10px; padding: 14px 22px; text-decoration: none; min-height: 48px; box-sizing: border-box; display: inline-flex; align-items: center">Install</a>
+        <a href="how-it-works.html" style="font-size: 16px; font-weight: 500; color: #F4EFE6; border: 1px solid #3A4F6E; border-radius: 10px; padding: 14px 22px; text-decoration: none; min-height: 48px; box-sizing: border-box; display: inline-flex; align-items: center">How it works</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F; margin-top: auto; background: #0B1424">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: #7C8CA3">
+      <span>© 2026 Gabier · MIT License · Made in Rust, in France.</span>
+      <div style="display: flex; flex-direction: row; gap: 18px">
+        <a href="docs/" style="color: #BFC9D8; text-decoration: none">Docs</a>
+        <a href="https://github.com/[TON_USER]/gabier" style="color: #BFC9D8; text-decoration: none">GitHub</a>
+        <a href="https://crates.io/crates/gabier" style="color: #BFC9D8; text-decoration: none">crates.io</a>
+      </div>
+    </div>
+  </footer>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>

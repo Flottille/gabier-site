@@ -1,0 +1,10 @@
+/* Gabier site — shared basics; page-specific rules stay inline */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#0F1B2D;color:#F4EFE6;font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.4}
+img{max-width:100%}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid #2BB5A0;outline-offset:3px;border-radius:6px}
+::selection{background:#E8613A;color:#0F1B2D}
+pre{tab-size:4}
+button.copied{color:#2BB5A0!important;border-color:#2BB5A0!important}
+@media (max-width:640px){h1{font-size:40px!important}}

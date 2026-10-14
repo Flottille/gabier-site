@@ -1,0 +1,47 @@
+---
+export interface Props {
+  id?: string;
+  /** `elevated` is the banded variant: surface background with hairlines above and below. */
+  tone?: "base" | "elevated";
+  /** Hairline above the section even in the base tone. */
+  divider?: boolean;
+  width?: "site" | "wide";
+  /** Vertical rhythm: `lg` for the main bands, `md` for tighter ones. */
+  space?: "lg" | "md" | "sm";
+  class?: string;
+  innerClass?: string;
+  as?: string;
+}
+
+const {
+  id,
+  tone = "base",
+  divider = false,
+  width = "site",
+  space = "lg",
+  class: className = "",
+  innerClass = "",
+  as: asTag = "section",
+} = Astro.props;
+
+const Tag = asTag as keyof HTMLElementTagNameMap;
+
+const spacing = {
+  lg: "py-16 md:py-18",
+  md: "py-14",
+  sm: "py-10",
+}[space];
+---
+
+<Tag
+  id={id}
+  class:list={[
+    "w-full",
+    tone === "elevated" ? "border-y border-line bg-surface" : divider ? "border-t border-line" : "",
+    className,
+  ]}
+>
+  <div class:list={[width === "wide" ? "container-wide" : "container-site", spacing, innerClass]}>
+    <slot />
+  </div>
+</Tag>

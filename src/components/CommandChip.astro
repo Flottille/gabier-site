@@ -1,0 +1,32 @@
+---
+import Icon from "./Icon.astro";
+
+export interface Props {
+  command: string;
+  size?: "md" | "sm";
+  class?: string;
+}
+
+const { command, size = "md", class: className = "" } = Astro.props;
+
+const sizing = size === "sm" ? "text-[0.8125rem] px-3.5 py-2.5" : "text-sm px-4.5 py-3.5";
+---
+
+<div
+  class:list={[
+    "flex max-w-full items-center gap-2.5 rounded-[0.625rem] border border-line bg-surface font-mono text-ink",
+    sizing,
+    className,
+  ]}
+>
+  <span class="shrink-0 text-accent select-none" aria-hidden="true">$</span>
+  <code class="min-w-0 flex-1 overflow-x-auto whitespace-nowrap">{command}</code>
+  <button
+    type="button"
+    data-clipboard={command}
+    class="-mr-1 flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-md border border-transparent text-ink-dim transition-colors hover:border-line hover:text-ink"
+    aria-label={`Copy "${command}" to the clipboard`}
+  >
+    <Icon name="copy" size={14} />
+  </button>
+</div>

@@ -1,0 +1,22 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# generated search index (produced by `npm run build`)
+public/pagefind/
+
+# environment
+.env
+.env.production
+
+# editors / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# local npm isolated-linker artifacts
+pnpm-lock.yaml

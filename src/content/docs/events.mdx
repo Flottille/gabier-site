@@ -1,0 +1,90 @@
+---
+title: Events
+eyebrow: Reference
+description: The sshd log lines Gabier recognises — accepted logins, failed passwords, invalid users and closed sessions — the fields parsed from each, and the order the filters run in.
+group: Reference
+order: 4
+---
+
+import Callout from "../../components/Callout.astro";
+
+Gabier reads sshd's log lines and turns four of them into events. Everything else — the pam session noise
+above all — is dropped before it costs anything.
+
+<div class="not-prose my-6 flex flex-col gap-2.5">
+  <div class="flex flex-wrap items-center gap-3 rounded-[0.625rem] border border-line bg-surface px-3.5 py-3">
+    <span class="size-2.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
+    <span class="flex-[0_0_8rem] font-bold text-ink">accepted</span>
+    <code class="min-w-0 flex-[1_1_20rem] overflow-x-auto whitespace-nowrap font-mono text-[0.8125rem] text-ink-muted">
+      Accepted publickey for root from 203.0.113.42 port 51288 ssh2: ED25519 SHA256:…
+    </code>
+  </div>
+  <div class="flex flex-wrap items-center gap-3 rounded-[0.625rem] border border-line bg-surface px-3.5 py-3">
+    <span class="size-2.5 shrink-0 rounded-full bg-danger" aria-hidden="true"></span>
+    <span class="flex-[0_0_8rem] font-bold text-ink">failed</span>
+    <code class="min-w-0 flex-[1_1_20rem] overflow-x-auto whitespace-nowrap font-mono text-[0.8125rem] text-ink-muted">
+      Failed password for root from 185.243.96.107 port 2222 ssh2
+    </code>
+  </div>
+  <div class="flex flex-wrap items-center gap-3 rounded-[0.625rem] border border-line bg-surface px-3.5 py-3">
+    <span class="size-2.5 shrink-0 rounded-full bg-brand" aria-hidden="true"></span>
+    <span class="flex-[0_0_8rem] font-bold text-ink">invalid_user</span>
+    <code class="min-w-0 flex-[1_1_20rem] overflow-x-auto whitespace-nowrap font-mono text-[0.8125rem] text-ink-muted">
+      Failed password for invalid user oracle from 185.243.96.107 port 2244 ssh2
+    </code>
+  </div>
+  <div class="flex flex-wrap items-center gap-3 rounded-[0.625rem] border border-line bg-surface px-3.5 py-3">
+    <span class="size-2.5 shrink-0 rounded-full bg-ink-dim" aria-hidden="true"></span>
+    <span class="flex-[0_0_8rem] font-bold text-ink">closed</span>
+    <code class="min-w-0 flex-[1_1_20rem] overflow-x-auto whitespace-nowrap font-mono text-[0.8125rem] text-ink-muted">
+      Connection closed by authenticating user root 185.243.96.107 port 2222
+    </code>
+  </div>
+</div>
+
+Each one has its own toggle in [`[events]`](/docs/configuration/#events). `closed` is off by default: it
+roughly doubles the volume and rarely tells you anything the other three did not.
+
+## Fields
+
+| Field | Present on | Notes |
+| --- | --- | --- |
+| `user` | all | The account named in the line. |
+| `ip` | all | Source address. The throttle key. |
+| `port` | all | Source port. sshd reuses it across the three password attempts of one connection. |
+| `method` | accepted, failed | `publickey`, `password`, `keyboard-interactive`… |
+| `key` | accepted | Key type and fingerprint, when the method is `publickey`. |
+
+The server name from [`[server] name`](/docs/configuration/#server) is attached to every notification, which is
+what lets one channel carry several machines.
+
+## Geolocation
+
+With `geoip = true`, Gabier resolves the source IP to a country, city and network operator and adds them to
+the message.
+
+<Callout variant="warning" title="It is off by default for a reason.">
+  Enabling it sends every source IP to the third-party service <code>ipwho.is</code>. That is a reasonable
+  trade for a personal VPS and a bad one if the addresses themselves are sensitive.
+</Callout>
+
+## Filter order
+
+For each parsed event, in order:
+
+1. **Event toggle** — is this kind enabled in `[events]`?
+2. **Deduplication** — is this the same attempt already seen on this connection?
+3. **Throttle** — has this IP used up its `burst` for the window? If so, count it for the summary.
+4. **Fan out** — build the payload and POST it to every configured destination.
+
+A drop at any step costs nothing more; the line is forgotten and the next one is read.
+
+## Why so few lines
+
+sshd's log format has been stable for a very long time, and these four lines answer the whole question of
+"who got in, and who tried". The parser lives in one file and is covered by tests against a real
+[`auth.log` fixture](https://github.com/fllottie/gabier/blob/main/tests/fixtures/auth.log), so a distribution
+that formats a line differently is a one-line fix with a test rather than an architectural problem.
+
+There is no history and no state across restarts: Gabier reports what just happened and forgets it. Your
+journal is already the log of record.

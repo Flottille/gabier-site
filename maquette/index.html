@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabier — landing page</title>
+<meta name="description" content="Gabier watches SSH logins on your VPS and pings you on Discord or Slack within a second. One Rust binary, zero dependencies.">
+<link rel="icon" type="image/png" href="assets/pince.png">
+<meta property="og:title" content="Gabier — landing page">
+<meta property="og:description" content="Gabier watches SSH logins on your VPS and pings you on Discord or Slack within a second. One Rust binary, zero dependencies.">
+<meta property="og:image" content="assets/pince.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+body{margin:0;font-family:'Space Grotesk',system-ui,sans-serif;color:#F4EFE6;background:#0F1B2D}
+a{color:#F2A27A}a:hover{color:#FFC7A8}
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; background: #0F1B2D; display: flex; flex-direction: column">
+
+  <!-- Nav -->
+  <header style="width: 100%; box-sizing: border-box; border-bottom: 1px solid #22344F">
+    <nav style="max-width: 1120px; margin: 0 auto; padding: 18px 24px; box-sizing: border-box; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+      <a href="#top" style="display: flex; flex-direction: row; align-items: center; gap: 12px; text-decoration: none; color: #F4EFE6">
+        <span style="width: 36px; height: 36px; border-radius: 9px; background: #E8613A; display: flex; align-items: center; justify-content: center"><img src="assets/pince.png" alt="" style="width: 32px; height: 32px; object-fit: contain"></span>
+        <span style="font-weight: 700; font-size: 20px; letter-spacing: -0.01em">Gabier</span>
+      </a>
+      <div style="display: flex; flex-direction: row; gap: 24px; align-items: center; flex-wrap: wrap">
+        <a href="features.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Features</a>
+        <a href="how-it-works.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none">How it works</a>
+        <a href="install.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Install</a>
+        <a href="docs/" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Docs</a>
+        <a href="https://github.com/[TON_USER]/gabier" style="font-size: 14px; font-weight: 700; color: #0F1B2D; background: #F4EFE6; border-radius: 8px; padding: 10px 16px; text-decoration: none; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">GitHub</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section id="top" style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 72px 24px 56px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 48px">
+      <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: #2BB5A0">SSH daemon · Rust · Discord &amp; Slack</div>
+        <h1 style="margin: 0; font-size: 64px; line-height: 1.02; font-weight: 700; letter-spacing: -0.03em; color: #F4EFE6">Know who boards your server.</h1>
+        <p style="margin: 0; font-size: 20px; line-height: 1.5; color: #BFC9D8; max-width: 520px">Gabier watches the SSH logins on your VPS and pings you on Discord or Slack within a second. One Rust binary, zero dependencies, one line of config.</p>
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px; align-items: center">
+          <a href="#install" style="font-size: 16px; font-weight: 700; color: #0F1B2D; background: #E8613A; border-radius: 10px; padding: 14px 22px; text-decoration: none; min-height: 48px; box-sizing: border-box; display: inline-flex; align-items: center">Install in 2 minutes</a>
+          <a href="https://github.com/[TON_USER]/gabier" style="font-size: 16px; font-weight: 500; color: #F4EFE6; border: 1px solid #3A4F6E; border-radius: 10px; padding: 14px 22px; text-decoration: none; min-height: 48px; box-sizing: border-box; display: inline-flex; align-items: center">View the code</a>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #F4EFE6; background: #132238; border: 1px solid #22344F; border-radius: 10px; padding: 14px 18px; display: flex; flex-direction: row; gap: 10px; align-items: center; overflow-x: auto"><span style="color: #2BB5A0">$</span><span>cargo install gabier</span></div>
+      </div>
+      <div style="flex: 1 1 320px; min-width: 0; display: flex; justify-content: center">
+        <img src="assets/pince.png" alt="Pince, the crab topman in his crow's nest, spyglass aimed at the horizon" style="width: 100%; max-width: 420px; height: auto; object-fit: contain">
+      </div>
+    </div>
+  </section>
+
+  <!-- Bandeau notif -->
+  <section style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 56px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 40px">
+      <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 34px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">What you get</h2>
+        <p style="margin: 0; font-size: 17px; line-height: 1.5; color: #BFC9D8">A clean embed you can read from your phone: who, from where, how. Mention yourself or your admin role on accepted logins, and keep quiet for your static IP or your backup account.</p>
+      </div>
+      <div style="flex: 1 1 360px; min-width: 0; background: #313338; border-radius: 12px; padding: 18px 20px; box-sizing: border-box; display: flex; flex-direction: row; gap: 14px; align-items: flex-start">
+        <span style="width: 40px; height: 40px; border-radius: 20px; background: #0F1B2D; flex: 0 0 auto; display: flex; align-items: center; justify-content: center"><img src="assets/pince.png" alt="" style="width: 36px; height: 36px; object-fit: contain"></span>
+        <div style="display: flex; flex-direction: column; gap: 6px; flex: 1 1 0; min-width: 0">
+          <div style="display: flex; flex-direction: row; align-items: baseline; gap: 8px; flex-wrap: wrap"><span style="font-weight: 700; color: #F2A27A; font-size: 15px">Gabier</span><span style="font-size: 10px; font-weight: 700; background: #5865F2; color: #FFFFFF; border-radius: 4px; padding: 1px 5px">APP</span><span style="font-size: 12px; color: #949BA4">Today at 19:57</span></div>
+          <div style="border-left: 4px solid #E8613A; background: #2B2D31; border-radius: 4px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; color: #DBDEE1">
+            <div style="font-weight: 700; font-size: 15px; color: #F4EFE6">Someone is boarding</div>
+            <div style="font-size: 13px">SSH login accepted on <strong>vps-dedie-01</strong>.</div>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; font-size: 12px; font-family: 'IBM Plex Mono', monospace">
+              <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #F4EFE6">User</span><span>thibault</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #F4EFE6">From</span><span>203.0.113.7</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #F4EFE6">Method</span><span>publickey ED25519</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #F4EFE6">Source port</span><span>51234</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fonctions -->
+  <section id="fonctions" style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 72px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 36px">
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 640px">
+        <h2 style="margin: 0; font-size: 34px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Small, quiet, always on watch</h2>
+        <p style="margin: 0; font-size: 17px; line-height: 1.5; color: #BFC9D8">Gabier does one thing and does it well. No heavy agent, no dashboard to host.</p>
+      </div>
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px">
+        <article style="background: #132238; border: 1px solid #22344F; border-radius: 14px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 300px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700">Within a second</h3>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #BFC9D8">Streams journald or auth.log. The moment sshd accepts a session, the notification is on its way.</p>
+        </article>
+        <article style="background: #132238; border: 1px solid #22344F; border-radius: 14px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 300px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"></path></svg>
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700">Hardened by default</h3>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #BFC9D8">Ships with a systemd unit: dynamic user, read-only system, no capabilities. It reads the journal, talks to your chat, nothing else.</p>
+        </article>
+        <article style="background: #132238; border: 1px solid #22344F; border-radius: 14px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 300px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"></path></svg>
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700">You pick the noise level</h3>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #BFC9D8">Accepted logins only, or failures and disconnects too. Ignore lists for users and IPs.</p>
+        </article>
+        <article style="background: #132238; border: 1px solid #22344F; border-radius: 14px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 300px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v12H8l-4 4z"></path></svg>
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700">Discord and Slack</h3>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #BFC9D8">A plain webhook, no bot to invite. Both at once if you like. Telegram, ntfy and email are coming.</p>
+        </article>
+        <article style="background: #132238; border: 1px solid #22344F; border-radius: 14px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 300px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700">One binary, that's it</h3>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #BFC9D8">Written in Rust, statically linked, a few MB. Debian, Ubuntu, Fedora, Arch, Alma: anywhere sshd runs.</p>
+        </article>
+        <article style="background: #132238; border: 1px solid #22344F; border-radius: 14px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 300px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
+          <h3 style="margin: 0; font-size: 20px; font-weight: 700">Open source</h3>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #BFC9D8">MIT licensed. Read it, audit it, fork it. The parser is covered by tests.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comment ça marche -->
+  <section id="comment" style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 72px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 36px">
+      <h2 style="margin: 0; font-size: 34px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">How it works</h2>
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 20px">
+        <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 300px">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">01 · Watch</div>
+          <div style="font-size: 18px; font-weight: 700">journalctl -f -u ssh</div>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #BFC9D8">Gabier follows the sshd journal (or a plain log file, rotation included).</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 300px">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">02 · Recognize</div>
+          <div style="font-size: 18px; font-weight: 700">Accepted publickey for…</div>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #BFC9D8">sshd lines are parsed: user, IP, port, method, key fingerprint.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0; flex: 1 1 300px">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">03 · Shout</div>
+          <div style="font-size: 18px; font-weight: 700">POST webhook Discord / Slack</div>
+          <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #BFC9D8">A message lands in your Discord or Slack channel. Pince did his job; back to what you were doing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section id="install" style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 72px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+      <div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 34px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Install in 2 minutes</h2>
+        <p style="margin: 0; font-size: 17px; line-height: 1.5; color: #BFC9D8">Create a webhook in Discord (Channel settings → Integrations → Webhooks) or Slack (Incoming Webhooks), paste it in the config, start the service.</p>
+      </div>
+      <div style="flex: 999 1 460px; min-width: 0; overflow-x: auto; background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 20px 22px; box-sizing: border-box">
+        <pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #2BB5A0">$</span> cargo install gabier
+<span style="color: #2BB5A0">$</span> sudo mkdir -p /etc/gabier
+<span style="color: #2BB5A0">$</span> gabier init | sudo tee /etc/gabier/config.toml <span style="color: #7C8CA3"># then paste your webhook</span>
+<span style="color: #2BB5A0">$</span> sudo gabier test                              <span style="color: #7C8CA3"># Pince waves hello</span>
+<span style="color: #2BB5A0">$</span> sudo systemctl enable --now gabier</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F; margin-top: auto; background: #0B1424">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 56px 24px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 40px">
+
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+        <div style="flex: 2 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 12px">
+            <span style="width: 40px; height: 40px; border-radius: 10px; background: #E8613A; display: flex; align-items: center; justify-content: center"><img src="assets/pince.png" alt="" style="width: 36px; height: 36px; object-fit: contain"></span>
+            <span style="font-weight: 700; font-size: 22px; letter-spacing: -0.01em">Gabier</span>
+          </div>
+          <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #BFC9D8; max-width: 360px">A <em>gabier</em> is the sailor who climbs to the crow's nest. Pince climbs up for you and shouts the moment someone boards.</p>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #F4EFE6; background: #132238; border: 1px solid #22344F; border-radius: 8px; padding: 10px 14px; display: flex; flex-direction: row; gap: 10px; align-items: center; align-self: flex-start; overflow-x: auto"><span style="color: #2BB5A0">$</span><span>cargo install gabier</span></div>
+        </div>
+
+        <nav aria-label="Product" style="flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #2BB5A0">Product</div>
+          <a href="features.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">Features</a>
+          <a href="how-it-works.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">How it works</a>
+          <a href="install.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">Install</a>
+          <a href="https://github.com/[TON_USER]/gabier/releases" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">Releases</a>
+        </nav>
+
+        <nav aria-label="Resources" style="flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #2BB5A0">Resources</div>
+          <a href="docs/" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">Documentation</a>
+          <a href="https://github.com/[TON_USER]/gabier/blob/main/config.example.toml" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">Example config</a>
+          <a href="https://github.com/[TON_USER]/gabier/blob/main/gabier.service" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">systemd unit</a>
+          <a href="https://crates.io/crates/gabier" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">crates.io</a>
+        </nav>
+
+        <nav aria-label="Community" style="flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #2BB5A0">Community</div>
+          <a href="https://github.com/[TON_USER]/gabier" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">GitHub</a>
+          <a href="https://github.com/[TON_USER]/gabier/issues" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">Report a bug</a>
+          <a href="https://github.com/[TON_USER]/gabier/discussions" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">Discussions</a>
+          <a href="https://github.com/[TON_USER]/gabier/blob/main/CONTRIBUTING.md" style="font-size: 15px; color: #BFC9D8; text-decoration: none; line-height: 1.4; min-height: 28px; display: inline-flex; align-items: center">Contribute</a>
+        </nav>
+      </div>
+
+      <div style="border-top: 1px solid #22344F; padding-top: 20px; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: #7C8CA3">
+        <span>© 2026 Gabier · MIT License · Made in Rust, in France.</span>
+        <div style="display: flex; flex-direction: row; align-items: center; gap: 8px">
+          <span style="width: 8px; height: 8px; border-radius: 4px; background: #2BB5A0; display: inline-block"></span>
+          <span>Pince is on watch</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>

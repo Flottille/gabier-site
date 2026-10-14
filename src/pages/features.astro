@@ -1,0 +1,321 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import Terminal from "../components/Terminal.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { STATS } from "../config/site";
+import { breadcrumbsLd, softwareApplicationLd } from "../lib/jsonld";
+
+const timeline = `09:03:14.114 sshd: Accepted publickey for root from 203.0.113.42 …
+09:03:14.118 gabier: event accepted  user=root ip=203.0.113.42
+09:03:14.391 gabier: discord ok  273 ms`;
+
+const throttleToml = `[events]
+accepted     = true
+failed       = true
+invalid_user = true
+closed       = false   # doubles the volume for little value
+
+[throttle]
+window_secs  = 300     # per source IP
+burst        = 1       # then count and summarise`;
+
+const hardening = `[Service]
+User=gabier
+SupplementaryGroups=systemd-journal
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryDenyWriteExecute=yes
+SystemCallFilter=@system-service
+MemoryMax=64M
+TasksMax=32`;
+
+const channels = [
+  {
+    name: "Discord",
+    dot: "bg-discord",
+    body: "Rich embed, coloured by event. Custom username. Ping a user or a role, and <code>allowed_mentions</code> is locked down so a log line can never trigger an <code>@everyone</code>.",
+    dashed: false,
+  },
+  {
+    name: "Slack",
+    dot: "bg-accent",
+    body: "Coloured attachment with a plain-text fallback for push. Slack's own mention syntax: <code>&lt;@U…&gt;</code>, <code>&lt;!subteam^S…&gt;</code>, <code>&lt;!channel&gt;</code>.",
+    dashed: false,
+  },
+  {
+    name: "Telegram · ntfy · email",
+    dot: "",
+    body: "Not written yet, but cheap to add: a <code>payload()</code> and a <code>Sink</code> variant. Retries, size limits and ping clamping already live in <code>hook.rs</code>.",
+    dashed: true,
+  },
+];
+
+const comparison = {
+  head: ["", "Shell script + curl", "Gabier", "Full monitoring stack"],
+  rows: [
+    ["Setup time", "An evening, then forever", "2 minutes", "A weekend"],
+    ["Log rotation, journald", "Usually broken", "Handled", "Handled"],
+    ["Survives a port-22 scan", "Floods the channel", "Burst summaries", "Yes, with tuning"],
+    ["Runs as root", "Usually", "No, dedicated account", "Often, as an agent"],
+    ["Resources", "Tiny", "64 MB ceiling", "A dedicated host"],
+    ["Dashboards, history, search", "No", "No, on purpose", "Yes"],
+    ["Good for", "One box, one afternoon", "Personal VPS, side projects, a handful of servers", "Fleets and compliance"],
+  ],
+};
+
+const refusals = [
+  {
+    title: "Block anyone",
+    body: "It watches and reports. Banning is fail2ban's job, and the two run well side by side.",
+  },
+  {
+    title: "Store history",
+    body: "Your journal already does. Gabier keeps no database and no state across restarts.",
+  },
+  {
+    title: "Phone home",
+    body: "The only outbound connections are your webhooks — plus ipwho.is, if you opt in to geolocation.",
+  },
+];
+
+const jsonLd = [
+  softwareApplicationLd(),
+  breadcrumbsLd([
+    { name: "Home", path: "/" },
+    { name: "Features", path: "/features/" },
+  ]),
+];
+---
+
+<BaseLayout
+  title="Features"
+  description="Everything Gabier does: sub-second SSH login alerts, per-IP burst throttling, Discord and Slack webhooks, optional geolocation and a hardened systemd unit — and the things it deliberately refuses to do."
+  image="/og/features.png"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="w-full">
+    <div class="container-site flex max-w-[47.5rem] flex-col gap-5 pt-16 pb-12">
+      <p class="eyebrow m-0">Features</p>
+      <h1 class="m-0 text-title text-ink">Everything a lookout needs. Nothing he doesn&rsquo;t.</h1>
+      <p class="m-0 text-lead text-ink-muted">
+        Gabier is deliberately small. Here is the full list of what it does, and a few things it refuses to do.
+      </p>
+    </div>
+  </section>
+
+  <!-- 01 Real time -->
+  <Section divider space="md">
+    <div class="flex flex-wrap items-center gap-12">
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3.5">
+        <p class="step-label m-0">01 · Real time</p>
+        <h2 class="m-0 text-h2 text-ink">Within a second of the login</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          Gabier streams the sshd journal (<code class="code-chip">journalctl --follow</code>) or tails a log
+          file across rotations. There is no polling interval to tune: a line is read the moment sshd writes
+          it, and the webhook POST — with retries — never blocks reading the next one.
+        </p>
+      </div>
+      <Terminal code={timeline} lang="log" label="journalctl -fu gabier" copy={false} class="flex-[1_1_22.5rem]" />
+    </div>
+  </Section>
+
+  <!-- 02 Throttle -->
+  <Section tone="elevated" space="md">
+    <div class="flex flex-wrap items-center gap-12">
+      <Terminal code={throttleToml} lang="toml" label="/etc/gabier/config.toml" class="flex-[1_1_22.5rem] !bg-bg" />
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3.5">
+        <p class="step-label m-0">02 · Anti-spam</p>
+        <h2 class="m-0 text-h2 text-ink">A scan cannot drown the real login</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          This is the only genuinely hard part, and it is solved. Per source IP, the first
+          <code class="code-chip">burst</code> failures go out immediately; the rest are counted and summarised
+          in one message at the end of the window. Successful logins are never grouped — that is the event you
+          are watching for.
+        </p>
+        <p class="m-0">
+          <a href="/docs/throttling/" class="inline-flex items-center gap-2 font-bold text-brand-soft no-underline hover:text-brand-bright">
+            Tuning the window
+            <span aria-hidden="true">→</span>
+          </a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 03 Channels -->
+  <Section space="md">
+    <div class="flex flex-wrap items-center gap-12">
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3.5">
+        <p class="step-label m-0">03 · Channels</p>
+        <h2 class="m-0 text-h2 text-ink">Discord and Slack, by webhook</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          No bot to invite, no OAuth dance, no token with broad scopes. A webhook URL is all Gabier needs, and
+          it can post to both at once — if one is down, the other still gets through. Keep the secret out of
+          the config entirely with <code class="code-chip">GABIER_DISCORD_WEBHOOK</code>.
+        </p>
+      </div>
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-wrap gap-4">
+        {
+          channels.map((channel) => (
+            <div
+              class:list={[
+                "flex min-w-0 flex-[1_1_12.5rem] flex-col gap-2.5 rounded-xl p-4.5",
+                channel.dashed ? "border border-dashed border-line-strong" : "card",
+              ]}
+            >
+              <p class="m-0 flex items-center gap-2.5">
+                {channel.dashed ? (
+                  <span class="size-2.5 rounded-full border border-ink-dim" aria-hidden="true" />
+                ) : (
+                  <span class:list={["size-2.5 rounded-full", channel.dot]} aria-hidden="true" />
+                )}
+                <span class:list={["font-bold", channel.dashed ? "text-ink-muted" : "text-ink"]}>{channel.name}</span>
+              </p>
+              <p
+                class:list={["rich-text m-0 text-sm leading-relaxed", channel.dashed ? "text-ink-dim" : "text-ink-muted"]}
+                set:html={channel.body}
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <!-- 04 Hardened -->
+  <Section tone="elevated" space="md">
+    <div class="flex flex-wrap items-center gap-12">
+      <Terminal code={hardening} lang="ini" label="systemd/gabier.service" class="flex-[1_1_22.5rem] !bg-bg" />
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3.5">
+        <p class="step-label m-0">04 · Hardened</p>
+        <h2 class="m-0 text-h2 text-ink">Least privilege, out of the box</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          A tool that watches your logins should not be a new way in. The installer creates a dedicated account
+          with no shell and no home; the unit gives it a read-only filesystem, no capabilities, no executable
+          memory, a syscall allow-list and a 64&nbsp;MB ceiling. It can read the journal and open outbound
+          HTTPS. That is the whole attack surface.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 05 Footprint -->
+  <Section space="md">
+    <div class="flex flex-wrap items-center gap-12">
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3.5">
+        <p class="step-label m-0">05 · Footprint</p>
+        <h2 class="m-0 text-h2 text-ink">One binary, a few megabytes</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          Rust and rustls, no OpenSSL, no runtime, roots embedded — so there is nothing to install on the VPS
+          alongside it. Release builds are stripped with LTO. Idle, it sits on a journal pipe and costs
+          nothing.
+        </p>
+      </div>
+      <dl class="m-0 flex min-w-0 flex-[1_1_22.5rem] flex-wrap gap-4">
+        {
+          [
+            { label: "Binary", value: STATS.binarySize, accent: false },
+            { label: "Memory ceiling", value: STATS.memoryMax, accent: false },
+            { label: "Runtime deps", value: STATS.runtimeDeps, accent: true },
+          ].map((stat) => (
+            <div class="card flex flex-[1_1_8.75rem] flex-col gap-1.5 p-4.5">
+              <dt class="font-mono text-xs text-ink-dim">{stat.label}</dt>
+              <dd class:list={["m-0 text-[1.75rem] font-bold", stat.accent ? "text-accent" : "text-ink"]}>
+                {stat.value}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </Section>
+
+  <!-- Comparison -->
+  <Section tone="elevated" space="md">
+    <div class="flex flex-col gap-7">
+      <div class="flex max-w-[40rem] flex-col gap-2.5">
+        <h2 class="m-0 text-h2 text-ink">Where Gabier sits</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          Between the bash one-liner you never finished and the SIEM you do not want to run for one VPS.
+        </p>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-line bg-bg">
+        <table class="w-full border-collapse text-left">
+          <caption class="sr-only">
+            Gabier compared with a hand-written shell script and a full monitoring stack
+          </caption>
+          <thead>
+            <tr>
+              {
+                comparison.head.map((cell, i) => (
+                  <th
+                    scope="col"
+                    class:list={[
+                      "border-b border-line px-3.5 py-3 font-mono text-[0.8125rem] font-medium tracking-[0.08em] uppercase",
+                      i === 2 ? "text-brand-soft" : "text-ink-dim",
+                    ]}
+                  >
+                    {cell}
+                  </th>
+                ))
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {
+              comparison.rows.map((row) => (
+                <tr>
+                  {row.map((cell, i) =>
+                    i === 0 ? (
+                      <th scope="row" class="border-b border-line px-3.5 py-3.5 text-left text-[0.9375rem] font-bold text-ink">
+                        {cell}
+                      </th>
+                    ) : (
+                      <td
+                        class:list={[
+                          "border-b border-line px-3.5 py-3.5 text-[0.9375rem] leading-relaxed",
+                          i === 2 ? "text-ink" : "text-ink-muted",
+                        ]}
+                      >
+                        {cell}
+                      </td>
+                    ),
+                  )}
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Refusals -->
+  <Section space="md">
+    <div class="flex flex-col gap-6">
+      <h2 class="m-0 text-h2 text-ink">What Gabier will not do</h2>
+      <div class="grid gap-4 md:grid-cols-3">
+        {
+          refusals.map((item) => (
+            <div class="flex min-w-0 flex-col gap-2 rounded-xl border border-line p-4.5">
+              <h3 class="m-0 text-base font-bold text-ink">{item.title}</h3>
+              <p class="m-0 text-sm leading-relaxed text-ink-muted">{item.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <CtaBand
+    title="Ready to put Pince on watch?"
+    subtitle="Two minutes, one webhook."
+    primary={{ href: "/install/", label: "Install" }}
+    secondary={{ href: "/how-it-works/", label: "How it works" }}
+  />
+</BaseLayout>

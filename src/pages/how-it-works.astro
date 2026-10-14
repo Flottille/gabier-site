@@ -1,0 +1,332 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import Terminal from "../components/Terminal.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Icon from "../components/Icon.astro";
+import { LINKS, STATS } from "../config/site";
+import { breadcrumbsLd, softwareApplicationLd } from "../lib/jsonld";
+
+const stages = [
+  {
+    file: "sshd",
+    accent: "border-line",
+    label: "text-ink-dim",
+    title: "Writes to the journal",
+    detail: "Accepted publickey for …",
+    mono: true,
+  },
+  {
+    file: "watch.rs",
+    accent: "border-accent",
+    label: "text-accent",
+    title: "Streams lines",
+    detail: "journald, a rotating file, or stdin",
+    mono: false,
+  },
+  {
+    file: "sshd.rs",
+    accent: "border-accent",
+    label: "text-accent",
+    title: "Parses",
+    detail: "log line → typed event",
+    mono: false,
+  },
+  {
+    file: "notify.rs",
+    accent: "border-accent",
+    label: "text-accent",
+    title: "Decides",
+    detail: "filters, dedup, per-IP throttle",
+    mono: false,
+  },
+  {
+    file: "hook.rs",
+    accent: "border-brand",
+    label: "text-brand",
+    title: "Posts",
+    detail: "POST with retries, shared by both sinks",
+    mono: false,
+  },
+];
+
+const mainLoop = `// main.rs — one channel, one flush tick, one stop future
+let (tx, mut rx) = mpsc::channel(4096);
+let src = tokio::spawn(watch::run(source, tx));
+
+let mut tick = tokio::time::interval(Duration::from_secs(5));
+tick.set_missed_tick_behavior(MissedTickBehavior::Delay);
+
+loop {
+    tokio::select! {
+        line = rx.recv() => match line {
+            Some(l) => n.line(&l).await,
+            None => { warn!("la source s'est arrêtée"); break }
+        },
+        _ = tick.tick() => n.tick().await,
+        _ = &mut stop => { info!("arrêt demandé"); break }
+    }
+}
+
+n.flush().await;   // pending burst summaries go out before we exit`;
+
+const checkOutput = `$ sudo -u gabier gabier check
+config    /etc/gabier/config.toml
+serveur   vps-prod-1
+source    journald (ssh, sshd)
+évènements accepted=true failed=true invalid_user=true closed=false
+anti-spam 1 échec(s) par IP, puis résumé toutes les 300s
+geoip     false
+discord   https://discord.com/api/webhooks/123/abcd…
+          joignable
+
+Tout est prêt.`;
+
+const modules = [
+  { file: "watch.rs", role: "journald, file or stdin → a channel of lines", href: LINKS.source.watch },
+  { file: "sshd.rs", role: "log line → Event", href: LINKS.source.sshd },
+  { file: "notify.rs", role: "filters, deduplicates, groups, decides to send", href: LINKS.source.notify },
+  { file: "hook.rs", role: "message + POST with retries, shared by both destinations", href: LINKS.source.hook },
+  { file: "discord.rs", role: "Discord payload (embed)", href: null },
+  { file: "slack.rs", role: "Slack payload (coloured attachment)", href: null },
+  { file: "geo.rs", role: "optional geolocation", href: null },
+];
+
+const securityModel = [
+  {
+    heading: "Can",
+    tone: "text-accent",
+    items: [
+      "Read the journal (group <code>systemd-journal</code>)",
+      "Read <code>/etc/gabier</code> as group <code>gabier</code>",
+      "Open outbound TCP to your webhooks",
+    ],
+  },
+  {
+    heading: "Cannot",
+    tone: "text-brand",
+    items: [
+      "Write anywhere but its private <code>/tmp</code>",
+      "See <code>/home</code>, devices, kernel tunables, cgroups",
+      "Gain privileges, run writable+executable memory, or exceed 64&nbsp;MB",
+    ],
+  },
+  {
+    heading: "Trust",
+    tone: "text-ink-dim",
+    items: [
+      "The webhook URL is the only secret, and it can live in <code>/etc/gabier/env</code> rather than the config. Rotate it if it leaks; nothing else is exposed.",
+    ],
+  },
+];
+
+const stack = ["tokio", "reqwest + rustls", "regex", "serde + toml", "clap", "tracing", "no OpenSSL", "webpki-roots"];
+
+const jsonLd = [
+  softwareApplicationLd(),
+  breadcrumbsLd([
+    { name: "Home", path: "/" },
+    { name: "How it works", path: "/how-it-works/" },
+  ]),
+];
+---
+
+<BaseLayout
+  title="How it works"
+  description="Watch, parse, decide, shout: the async pipeline behind Gabier, from the sshd journal line to the Discord or Slack webhook — plus the throttle and the security model of the shipped systemd unit."
+  image="/og/how-it-works.png"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="w-full">
+    <div class="container-site flex max-w-[47.5rem] flex-col gap-5 pt-16 pb-12">
+      <p class="eyebrow m-0">How it works</p>
+      <h1 class="m-0 text-title text-ink">Watch, recognize, shout.</h1>
+      <p class="m-0 text-lead text-ink-muted">
+        Four stages, one async pipeline, one bounded channel. Here is what happens between someone typing
+        <code class="code-chip">ssh</code> and your phone buzzing.
+      </p>
+    </div>
+  </section>
+
+  <!-- Pipeline -->
+  <Section tone="elevated" space="sm">
+    <ol class="m-0 flex list-none flex-wrap items-stretch gap-0 p-0">
+      {
+        stages.map((stage, i) => (
+          <Fragment>
+            <li
+              class:list={["flex min-w-0 flex-[1_1_10rem] flex-col gap-2 rounded-xl border bg-bg p-5", stage.accent]}
+            >
+              <p class:list={["m-0 font-mono text-xs", stage.label]}>{stage.file}</p>
+              <p class="m-0 text-[1.0625rem] font-bold text-ink">{stage.title}</p>
+              <p
+                class:list={[
+                  "m-0 min-w-0 text-[0.8125rem] text-ink-muted",
+                  stage.mono && "truncate font-mono text-xs",
+                ]}
+              >
+                {stage.detail}
+              </p>
+            </li>
+            {i < stages.length - 1 && (
+              <li
+                class="flex basis-full items-center justify-center py-2 text-accent sm:basis-10 sm:py-0"
+                aria-hidden="true"
+              >
+                <Icon name="arrow-right" size={20} class="rotate-90 sm:rotate-0" />
+              </li>
+            )}
+          </Fragment>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- 01 Watch -->
+  <Section space="md">
+    <div class="flex flex-wrap items-start gap-12">
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3.5">
+        <p class="step-label m-0">01 · Watch</p>
+        <h2 class="m-0 text-h2 text-ink">Reading the journal without owning it</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          On a systemd host, <code class="code-chip">watch.rs</code> follows
+          <code class="code-chip">journalctl</code> on both <code class="code-chip">ssh</code> and
+          <code class="code-chip">sshd</code> — following the unit that does not exist costs nothing, which is
+          why the default works on every mainstream distribution without edits.
+        </p>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          With <code class="code-chip">kind = "file"</code> it tails a log file and follows logrotate, so
+          there is nothing to restart after a rotation. <code class="code-chip">kind = "stdin"</code> reads a
+          pipe, which is what makes the pipeline testable.
+        </p>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          Lines go into a bounded channel. The reader never waits on a webhook.
+        </p>
+      </div>
+      <Terminal code={mainLoop} lang="rust" label="main.rs" copy={false} class="flex-[1_1_22.5rem]" />
+    </div>
+  </Section>
+
+  <!-- 02 Decide -->
+  <Section tone="elevated" space="md">
+    <div class="flex flex-wrap items-start gap-12">
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3.5">
+        <p class="step-label m-0">02 · Recognize &amp; decide</p>
+        <h2 class="m-0 text-h2 text-ink">Parse, then resist the urge to notify</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          <code class="code-chip">sshd.rs</code> turns a log line into a typed event: accepted, failed,
+          invalid user, closed. It is a pure function, tested against a real
+          <code class="code-chip">auth.log</code> fixture, so a distribution that formats a line differently is
+          a one-line fix with a test.
+        </p>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          <code class="code-chip">notify.rs</code> is where the judgement lives: the event toggles, the
+          deduplication of sshd&rsquo;s three password attempts per connection, and the per-IP burst window.
+          The five-second tick exists for exactly one reason — to flush a window that has expired even when no
+          new line has arrived.
+        </p>
+        <p class="m-0">
+          <a href="/docs/throttling/" class="inline-flex items-center gap-2 font-bold text-brand-soft no-underline hover:text-brand-bright">
+            The throttle in detail
+            <span aria-hidden="true">→</span>
+          </a>
+        </p>
+      </div>
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3">
+        <h3 class="m-0 font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">The modules</h3>
+        <dl class="m-0 flex flex-col gap-0 overflow-hidden rounded-xl border border-line bg-bg">
+          {
+            modules.map((module) => (
+              <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-line px-4 py-3 last:border-b-0">
+                <dt class="flex-[0_0_6rem] font-mono text-[0.8125rem] text-brand-soft">
+                  {module.href ? (
+                    <a href={module.href} target="_blank" rel="noopener noreferrer" class="no-underline hover:text-brand-bright">
+                      {module.file}
+                    </a>
+                  ) : (
+                    module.file
+                  )}
+                </dt>
+                <dd class="m-0 min-w-0 flex-1 text-[0.875rem] leading-snug text-ink-muted">{module.role}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </Section>
+
+  <!-- 03 Shout -->
+  <Section space="md">
+    <div class="flex flex-wrap items-start gap-12">
+      <Terminal code={checkOutput} lang="shellsession" label="shell" copy={false} class="flex-[1_1_22.5rem]" />
+      <div class="flex min-w-0 flex-[1_1_22.5rem] flex-col gap-3.5">
+        <p class="step-label m-0">03 · Shout</p>
+        <h2 class="m-0 text-h2 text-ink">One POST per destination, with retries</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          <code class="code-chip">discord.rs</code> and <code class="code-chip">slack.rs</code> only build a
+          payload; everything else — the request, the retries, the size limits, the clamping of mentions —
+          lives once in <code class="code-chip">hook.rs</code>. Configure both destinations and a Discord
+          outage never costs you the Slack message.
+        </p>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          That shared layer is also why <code class="code-chip">gabier check</code> can probe every webhook
+          without publishing anything, and report all the broken ones rather than the first.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Security model -->
+  <Section tone="elevated" space="md">
+    <div class="flex flex-col gap-7">
+      <div class="flex max-w-[40rem] flex-col gap-2.5">
+        <h2 class="m-0 text-h2 text-ink">The security model</h2>
+        <p class="m-0 leading-relaxed text-ink-muted">
+          What Gabier can touch, and what it cannot, when started from the shipped unit.
+        </p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-3">
+        {
+          securityModel.map((column) => (
+            <div class="flex min-w-0 flex-col gap-2.5 rounded-xl border border-line bg-bg p-4.5">
+              <h3 class:list={["m-0 font-mono text-xs font-medium", column.tone]}>{column.heading}</h3>
+              <ul class="rich-text m-0 flex list-none flex-col gap-1.5 p-0 text-[0.9375rem] leading-relaxed text-ink-muted">
+                {column.items.map((item) => (
+                  <li set:html={item} />
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+      <p class="m-0 max-w-[44rem] leading-relaxed text-ink-muted">
+        On the Discord side <code class="code-chip">allowed_mentions</code> is locked down, so a username
+        appearing inside a log line can never trigger an <code class="code-chip">@everyone</code>. On Slack the
+        ping is only put in <code class="code-chip">text</code> when you configured one explicitly.
+      </p>
+    </div>
+  </Section>
+
+  <!-- Stack -->
+  <Section space="md">
+    <div class="flex flex-col gap-6">
+      <h2 class="m-0 text-h2 text-ink">Under the hood</h2>
+      <ul class="m-0 flex list-none flex-wrap gap-2.5 p-0">
+        {stack.map((item) => <li class="pill">{item}</li>)}
+      </ul>
+      <p class="m-0 max-w-[40rem] leading-relaxed text-ink-muted">
+        About {STATS.linesOfRust} lines of Rust across seven modules. Small enough to read in one sitting,
+        which is the point: you should be able to audit the thing that watches your server.
+      </p>
+    </div>
+  </Section>
+
+  <CtaBand
+    title="Convinced?"
+    subtitle="The install takes less time than reading this page did."
+    primary={{ href: "/install/", label: "Install" }}
+    secondary={{ href: LINKS.github, label: "Read the source", external: true }}
+  />
+</BaseLayout>

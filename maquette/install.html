@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabier — Install</title>
+<meta name="description" content="Install Gabier in two minutes: cargo, prebuilt binary or from source.">
+<link rel="icon" type="image/png" href="assets/pince.png">
+<meta property="og:title" content="Gabier — Install">
+<meta property="og:description" content="Install Gabier in two minutes: cargo, prebuilt binary or from source.">
+<meta property="og:image" content="assets/pince.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+body{margin:0;font-family:'Space Grotesk',system-ui,sans-serif;color:#F4EFE6;background:#0F1B2D}
+a{color:#F2A27A}a:hover{color:#FFC7A8}
+code{font-family:'IBM Plex Mono',monospace;font-size:0.92em;background:#132238;border:1px solid #22344F;border-radius:5px;padding:1px 6px;color:#F4EFE6}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8CA3;padding:12px 14px;border-bottom:1px solid #22344F;font-family:'IBM Plex Mono',monospace;font-weight:500}
+td{padding:14px;border-bottom:1px solid #22344F;font-size:15px;line-height:1.5;color:#BFC9D8;vertical-align:top}
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; background: #0F1B2D; display: flex; flex-direction: column">
+
+  <header style="width: 100%; box-sizing: border-box; border-bottom: 1px solid #22344F">
+    <nav style="max-width: 1120px; margin: 0 auto; padding: 18px 24px; box-sizing: border-box; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+      <a href="index.html" style="display: flex; flex-direction: row; align-items: center; gap: 12px; text-decoration: none; color: #F4EFE6">
+        <span style="width: 36px; height: 36px; border-radius: 9px; background: #E8613A; display: flex; align-items: center; justify-content: center"><img src="assets/pince.png" alt="" style="width: 32px; height: 32px; object-fit: contain"></span>
+        <span style="font-weight: 700; font-size: 20px; letter-spacing: -0.01em">Gabier</span>
+      </a>
+      <div style="display: flex; flex-direction: row; gap: 24px; align-items: center; flex-wrap: wrap">
+        <a href="features.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Features</a>
+        <a href="how-it-works.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none">How it works</a>
+        <a href="install.html" aria-current="page" style="font-size: 15px; color: #F4EFE6; text-decoration: none; border-bottom: 2px solid #E8613A; padding-bottom: 2px">Install</a>
+        <a href="docs/" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Docs</a>
+        <a href="https://github.com/[TON_USER]/gabier" style="font-size: 14px; font-weight: 700; color: #0F1B2D; background: #F4EFE6; border-radius: 8px; padding: 10px 16px; text-decoration: none; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">GitHub</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 72px 24px 48px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 40px; align-items: center">
+      <div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: #2BB5A0">Install</div>
+        <h1 style="margin: 0; font-size: 56px; line-height: 1.02; font-weight: 700; letter-spacing: -0.03em">Two minutes to a running lookout.</h1>
+        <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #BFC9D8; max-width: 560px">Pick how you want the binary, paste one webhook, enable the service. Pince takes it from there.</p>
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 4px 10px">Linux x86_64 · aarch64</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 4px 10px">systemd or a log file</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 4px 10px">root for /etc and the unit</span>
+        </div>
+      </div>
+      <div style="flex: 1 1 240px; min-width: 0; display: flex; justify-content: center">
+        <img src="assets/pince.png" alt="Pince, the crab topman, waving from his crow's nest" style="width: 100%; max-width: 300px; height: auto; object-fit: contain">
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 1: get the binary -->
+  <section style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">Step 1</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Get the binary</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8; max-width: 640px">Three ways, same result: <code>/usr/local/bin/gabier</code>.</p>
+      </div>
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 16px; align-items: stretch">
+        <div style="flex: 1 1 300px; min-width: 0; background: #132238; border: 1px solid #2BB5A0; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden">
+          <div style="padding: 14px 16px; border-bottom: 1px solid #22344F; display: flex; flex-direction: row; justify-content: space-between; align-items: center"><span style="font-weight: 700">cargo</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2BB5A0; border: 1px solid #2BB5A0; border-radius: 999px; padding: 2px 8px">recommended</span></div>
+          <pre style="margin: 0; padding: 16px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.7; color: #F4EFE6; white-space: pre; flex: 1 1 auto"><span style="color: #2BB5A0">$</span> cargo install gabier
+<span style="color: #2BB5A0">$</span> sudo install -m755 \
+    ~/.cargo/bin/gabier /usr/local/bin/</pre>
+          <div style="padding: 12px 16px; border-top: 1px solid #22344F; font-size: 13px; color: #7C8CA3">Needs Rust 1.75+ on the box.</div>
+        </div>
+        <div style="flex: 1 1 300px; min-width: 0; background: #132238; border: 1px solid #22344F; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden">
+          <div style="padding: 14px 16px; border-bottom: 1px solid #22344F; display: flex; flex-direction: row; justify-content: space-between; align-items: center"><span style="font-weight: 700">prebuilt</span></div>
+          <pre style="margin: 0; padding: 16px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.7; color: #F4EFE6; white-space: pre; flex: 1 1 auto"><span style="color: #2BB5A0">$</span> curl -LO https://github.com/[TON_USER]/gabier/\
+    releases/latest/download/gabier-x86_64-linux.tar.gz
+<span style="color: #2BB5A0">$</span> tar xzf gabier-*.tar.gz
+<span style="color: #2BB5A0">$</span> sudo install -m755 gabier /usr/local/bin/</pre>
+          <div style="padding: 12px 16px; border-top: 1px solid #22344F; font-size: 13px; color: #7C8CA3">Static musl build. No Rust needed.</div>
+        </div>
+        <div style="flex: 1 1 300px; min-width: 0; background: #132238; border: 1px solid #22344F; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden">
+          <div style="padding: 14px 16px; border-bottom: 1px solid #22344F; display: flex; flex-direction: row; justify-content: space-between; align-items: center"><span style="font-weight: 700">from source</span></div>
+          <pre style="margin: 0; padding: 16px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.7; color: #F4EFE6; white-space: pre; flex: 1 1 auto"><span style="color: #2BB5A0">$</span> git clone https://github.com/[TON_USER]/gabier
+<span style="color: #2BB5A0">$</span> cd gabier &amp;&amp; cargo build --release
+<span style="color: #2BB5A0">$</span> sudo install -m755 \
+    target/release/gabier /usr/local/bin/</pre>
+          <div style="padding: 12px 16px; border-top: 1px solid #22344F; font-size: 13px; color: #7C8CA3">Read it first, then build it.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 2: config -->
+  <section style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+      <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">Step 2</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Create a webhook and the config</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8"><strong style="color: #F4EFE6">Discord:</strong> channel settings → Integrations → Webhooks → New webhook. Copy the URL.</p>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8"><strong style="color: #F4EFE6">Slack:</strong> api.slack.com/apps → your app → Incoming Webhooks → Add New Webhook to Workspace. Copy the URL.</p>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Then generate the config, lock it down and paste the URL in. One of the two sections is enough; both is fine.</p>
+      </div>
+      <div style="flex: 1 1 400px; min-width: 0; background: #0F1B2D; border: 1px solid #22344F; border-radius: 12px; overflow: hidden">
+        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid #22344F; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3"><span>shell</span><button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; background: transparent; border: 1px solid #22344F; border-radius: 6px; padding: 4px 10px; min-height: 28px; cursor: pointer">Copy</button></div>
+        <pre style="margin: 0; padding: 16px 18px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #2BB5A0">$</span> sudo mkdir -p /etc/gabier
+<span style="color: #2BB5A0">$</span> gabier init | sudo tee /etc/gabier/config.toml >/dev/null
+<span style="color: #2BB5A0">$</span> sudo chmod 600 /etc/gabier/config.toml
+<span style="color: #2BB5A0">$</span> sudoedit /etc/gabier/config.toml   <span style="color: #7C8CA3"># paste webhook_url</span>
+<span style="color: #2BB5A0">$</span> sudo gabier check
+<span style="color: #2BB5A0">$</span> sudo gabier test                    <span style="color: #7C8CA3"># Pince waves hello</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: service -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+      <div style="flex: 1 1 400px; min-width: 0; background: #132238; border: 1px solid #22344F; border-radius: 12px; overflow: hidden">
+        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid #22344F; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3"><span>shell</span><button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; background: transparent; border: 1px solid #22344F; border-radius: 6px; padding: 4px 10px; min-height: 28px; cursor: pointer">Copy</button></div>
+        <pre style="margin: 0; padding: 16px 18px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #2BB5A0">$</span> sudo curl -o /etc/systemd/system/gabier.service \
+    https://raw.githubusercontent.com/[TON_USER]/gabier/main/gabier.service
+<span style="color: #2BB5A0">$</span> sudo systemctl daemon-reload
+<span style="color: #2BB5A0">$</span> sudo systemctl enable --now gabier
+<span style="color: #2BB5A0">$</span> systemctl status gabier
+<span style="color: #7C8CA3">● gabier.service — Gabier
+     Active: active (running)
+     gabier: Gabier est dans la hune  hostname=vps-01 canaux=["discord"]</span></pre>
+      </div>
+      <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">Step 3</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Enable the service</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">The unit is hardened: dynamic user, read-only system, no capabilities, journal access through the <code>systemd-journal</code> group. It restarts on failure after five seconds.</p>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Now log in over SSH from another machine. Your channel should light up within a second.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Distro notes -->
+  <section style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+      <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Distribution notes</h2>
+      <div style="overflow-x: auto; border: 1px solid #22344F; border-radius: 12px; background: #0F1B2D">
+        <table>
+          <thead><tr><th>Distribution</th><th>sshd unit</th><th>Log file (if not journald)</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Debian / Ubuntu</td><td><code>ssh.service</code></td><td><code>/var/log/auth.log</code></td><td>Default config works as is.</td></tr>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Fedora / RHEL / Alma / Rocky</td><td><code>sshd.service</code></td><td><code>/var/log/secure</code></td><td>Default config works as is.</td></tr>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Arch</td><td><code>sshd.service</code></td><td>journald only</td><td>Default config works as is.</td></tr>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Alpine (OpenRC)</td><td>—</td><td><code>/var/log/messages</code></td><td>Use <code>kind = "file"</code> and write your own OpenRC script.</td></tr>
+            <tr><td style="color: #F4EFE6; font-weight: 700">Ubuntu 24.04 with socket activation</td><td><code>ssh.service</code></td><td>—</td><td>sshd still logs under <code>ssh.service</code>; nothing to change.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upgrade / uninstall -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 32px">
+      <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 24px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">Upgrade</h2>
+        <div style="background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 16px 18px; overflow-x: auto"><pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #2BB5A0">$</span> cargo install gabier --force
+<span style="color: #2BB5A0">$</span> sudo install -m755 ~/.cargo/bin/gabier /usr/local/bin/
+<span style="color: #2BB5A0">$</span> sudo systemctl restart gabier</pre></div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #7C8CA3">Config keys are never removed within 0.x; new keys always have a default.</p>
+      </div>
+      <div style="flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 24px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">Uninstall</h2>
+        <div style="background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 16px 18px; overflow-x: auto"><pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #2BB5A0">$</span> sudo systemctl disable --now gabier
+<span style="color: #2BB5A0">$</span> sudo rm /etc/systemd/system/gabier.service \
+    /usr/local/bin/gabier
+<span style="color: #2BB5A0">$</span> sudo rm -r /etc/gabier   <span style="color: #7C8CA3"># holds your webhook</span></pre></div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #7C8CA3">Nothing else is written anywhere. Pince leaves no footprints.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 56px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px">
+      <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 24px; font-weight: 700">Something did not work?</span><span style="font-size: 15px; color: #BFC9D8">The docs have a troubleshooting section, and issues are welcome.</span></div>
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px">
+        <a href="docs/" style="font-size: 16px; font-weight: 700; color: #0F1B2D; background: #E8613A; border-radius: 10px; padding: 14px 22px; text-decoration: none; min-height: 48px; box-sizing: border-box; display: inline-flex; align-items: center">Troubleshooting</a>
+        <a href="https://github.com/[TON_USER]/gabier/issues" style="font-size: 16px; font-weight: 500; color: #F4EFE6; border: 1px solid #3A4F6E; border-radius: 10px; padding: 14px 22px; text-decoration: none; min-height: 48px; box-sizing: border-box; display: inline-flex; align-items: center">Open an issue</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F; margin-top: auto; background: #0B1424">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: #7C8CA3">
+      <span>© 2026 Gabier · MIT License · Made in Rust, in France.</span>
+      <div style="display: flex; flex-direction: row; gap: 18px">
+        <a href="docs/" style="color: #BFC9D8; text-decoration: none">Docs</a>
+        <a href="https://github.com/[TON_USER]/gabier" style="color: #BFC9D8; text-decoration: none">GitHub</a>
+        <a href="https://crates.io/crates/gabier" style="color: #BFC9D8; text-decoration: none">crates.io</a>
+      </div>
+    </div>
+  </footer>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>

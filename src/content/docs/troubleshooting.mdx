@@ -1,0 +1,134 @@
+---
+title: Troubleshooting
+eyebrow: More
+description: Fixes for the usual Gabier problems — no notification after a login, journalctl permission denied, a webhook returning 401 or 404, a channel that is too noisy, and a service that will not start.
+group: More
+order: 1
+faq:
+  - q: Why does Gabier send no notification after an SSH login?
+    a: "Run `gabier replay /var/log/auth.log --dry-run` to confirm the parser sees your log format, then `RUST_LOG=gabier=debug gabier run` and log in again. If no lines appear at all, the source is wrong: check which of ssh.service or sshd.service exists, or switch to kind = \"file\" and point source.path at /var/log/auth.log or /var/log/secure."
+  - q: Why does journalctl say permission denied when Gabier runs?
+    a: Gabier runs as the dedicated gabier account, which must be in the systemd-journal group to read the journal. The shipped unit does that with SupplementaryGroups=systemd-journal. If you run the binary by hand, use sudo -u gabier, or add your own user to that group.
+  - q: Why does Discord reply 401 or 404 to the webhook?
+    a: The webhook was deleted or the URL is truncated — the token at the end is easy to lose when copying. Create a new webhook and paste the whole URL. Run gabier check to probe it without posting anything.
+  - q: How do I make Gabier less noisy?
+    a: Lower throttle.burst to 0 so no individual failure is sent and you only get the windowed summary, raise throttle.window_secs, or turn off events.failed and events.invalid_user entirely to keep successful logins only.
+  - q: Why is the burst counter lower than the number of failures in my journal?
+    a: sshd allows three password attempts per connection on the same source port. Gabier folds those into one event on purpose, to keep the channel readable, so the burst summary under-counts by the same amount.
+---
+
+import Callout from "../../components/Callout.astro";
+
+Start here before opening an issue. These cover almost everything.
+
+## Nothing shows up after a login
+
+First find out whether the parser understands your logs at all. `replay` is non-destructive and sends
+nothing:
+
+```shellsession
+$ gabier replay /var/log/auth.log --dry-run --config /etc/gabier/config.toml
+```
+
+**Events found, but nothing arrives live** — the live source is wrong. Check which unit actually exists:
+
+```shellsession
+$ systemctl status ssh sshd
+$ journalctl -u ssh -u sshd -n 20
+```
+
+Put whichever exists in `source.units`. If sshd does not log to the journal on your system, read the file
+instead:
+
+```toml
+[source]
+kind = "file"
+path = "/var/log/auth.log"   # /var/log/secure on the RHEL family
+```
+
+**No events at all in the replay** — the log format is not being parsed. Open an issue with a few redacted
+lines; it is a one-line fix in `sshd.rs`.
+
+**Events found and sent, but the channel is silent** — the destination is the problem:
+
+```shellsession
+$ sudo -u gabier gabier check --config /etc/gabier/config.toml
+```
+
+## journalctl: permission denied
+
+Reading the journal requires membership of the `systemd-journal` group. The shipped unit grants it to the
+service account:
+
+```ini
+[Service]
+User=gabier
+SupplementaryGroups=systemd-journal
+```
+
+If you are running the binary by hand, run it as that account — `sudo -u gabier gabier check` — rather than
+as yourself.
+
+## Discord or Slack replied with an error
+
+```shellsession
+$ sudo -u gabier gabier check --config /etc/gabier/config.toml
+```
+
+`check` probes every destination and prints what each one answered, with the webhook token masked. A `401` or
+`404` means the webhook was deleted or the URL is truncated; create a new one and paste the whole thing. See
+[Discord](/docs/discord/) and [Slack](/docs/slack/) for the service-specific responses.
+
+## Too many messages
+
+The throttle is the right lever, not the event toggles:
+
+```toml
+[throttle]
+window_secs = 900   # longer window, fewer summaries
+burst = 0           # never send an individual failure
+```
+
+With `burst = 0` you get one summary per IP per window and nothing else. If you want successes only, turn the
+rest off:
+
+```toml
+[events]
+accepted = true
+failed = false
+invalid_user = false
+closed = false
+```
+
+<Callout title="Gabier observes, it never blocks.">
+  Keep <code>fail2ban</code> alongside it. fail2ban ends the attempts; Gabier tells you about the one that
+  succeeded. See <a href="/docs/throttling/">Throttling</a> for how the windows work.
+</Callout>
+
+## The service will not start
+
+```shellsession
+$ systemctl status gabier
+$ journalctl -u gabier -n 50 --no-pager
+$ sudo -u gabier gabier check --config /etc/gabier/config.toml
+```
+
+In order of likelihood:
+
+1. **No destination configured.** At least one of `[discord]` and `[slack]` must have a usable webhook, from
+   the config or from `/etc/gabier/env`.
+2. **The config is unreadable by the service account.** `install.sh` sets `root:gabier` and mode `0640`; a
+   config you created by hand may not be.
+3. **No config found.** The unit passes `--config /etc/gabier/config.toml` explicitly, so the file must be
+   exactly there.
+
+## Too few failures counted
+
+sshd allows three password attempts per connection, on the same source port. Gabier folds those into one
+event deliberately — otherwise every single attempt would be three notifications — so a burst summary
+under-counts relative to a raw `grep` of the journal. This is expected.
+
+## Still stuck
+
+Open an issue with the output of `gabier check` (the token is masked), your distribution and systemd version,
+and the `replay --dry-run` output for a few lines around the login that should have fired.

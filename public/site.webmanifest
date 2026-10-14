@@ -1,0 +1,15 @@
+{
+  "name": "Gabier",
+  "short_name": "Gabier",
+  "description": "SSH login alerts on Discord and Slack, from one small Rust daemon.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#0F1B2D",
+  "theme_color": "#0F1B2D",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

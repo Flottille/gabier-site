@@ -1,0 +1,30 @@
+---
+import { ICON_PATHS, type IconName } from "../lib/icons";
+
+interface Props {
+  name: IconName;
+  size?: number;
+  class?: string;
+  strokeWidth?: number;
+  /** Supply it to expose the icon to assistive tech; without it the icon is decorative. */
+  title?: string;
+}
+
+const { name, size = 24, class: className = "", strokeWidth = 2, title } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  role={title ? "img" : undefined}
+  aria-hidden={title ? undefined : "true"}
+  aria-label={title}
+  set:html={ICON_PATHS[name]}
+/>

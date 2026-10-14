@@ -1,0 +1,27 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The maquette shipped .html URLs; keep them working with real 301s.
+[[redirects]]
+  from = "/features.html"
+  to = "/features/"
+  status = 301
+
+[[redirects]]
+  from = "/how-it-works.html"
+  to = "/how-it-works/"
+  status = 301
+
+[[redirects]]
+  from = "/install.html"
+  to = "/install/"
+  status = 301
+
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301

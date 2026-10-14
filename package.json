@@ -1,0 +1,39 @@
+{
+  "name": "gabier-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "gabier.sh — the website and documentation for Gabier, an SSH login notifier for Discord and Slack.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "build:nosearch": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "og": "node scripts/og.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4",
+    "@astrojs/sitemap": "^3",
+    "@fontsource/ibm-plex-mono": "^5",
+    "@fontsource/space-grotesk": "^5",
+    "@tailwindcss/typography": "^0.5",
+    "@tailwindcss/vite": "^4",
+    "astro": "^5",
+    "rehype-autolink-headings": "^7",
+    "rehype-slug": "^6",
+    "tailwindcss": "^4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9",
+    "pagefind": "^1",
+    "satori": "^0",
+    "sharp": "^0.34",
+    "typescript": "^5"
+  },
+  "allowScripts": {
+    "sharp@0.34.5": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.27.7": true
+  }
+}

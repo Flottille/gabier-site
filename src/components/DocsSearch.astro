@@ -1,0 +1,201 @@
+---
+import Icon from "./Icon.astro";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<div class:list={["relative min-w-0", className]} data-search-root data-pagefind-ignore>
+  <form role="search" class="m-0 flex min-w-0 items-center gap-2" autocomplete="off">
+    <label for="docs-search" class="sr-only">Search the documentation</label>
+    <div class="relative flex min-w-0 flex-1 items-center">
+      <Icon name="search" size={16} class="pointer-events-none absolute left-3 text-ink-dim" />
+      <input
+        id="docs-search"
+        type="search"
+        placeholder="Search the docs…"
+        role="combobox"
+        aria-expanded="false"
+        aria-controls="docs-search-results"
+        aria-autocomplete="list"
+        class="h-10 w-full min-w-0 rounded-lg border border-line bg-surface pr-3 pl-9 font-sans text-sm text-ink placeholder:text-ink-dim focus:border-accent focus:outline-none"
+      />
+    </div>
+    <kbd
+      class="hidden shrink-0 rounded-[0.3125rem] border border-line px-1.5 py-0.5 font-mono text-xs text-ink-dim sm:block"
+      aria-hidden="true">/</kbd
+    >
+  </form>
+
+  <div
+    id="docs-search-results"
+    role="listbox"
+    aria-label="Search results"
+    hidden
+    class="absolute top-[calc(100%+0.5rem)] right-0 z-40 max-h-[70vh] w-full min-w-0 overflow-y-auto overscroll-contain rounded-xl border border-line bg-bg shadow-2xl shadow-black/40 sm:w-[28rem]"
+  >
+    <p data-search-status class="m-0 px-4 py-3 text-sm text-ink-dim"></p>
+    <ul data-search-list class="m-0 flex list-none flex-col p-0"></ul>
+  </div>
+</div>
+
+<script>
+  /**
+   * Static full-text search over the built docs, powered by Pagefind.
+   * The index only exists after `pagefind --site dist` has run, so in `astro dev`
+   * this degrades to a short explanatory message instead of throwing.
+   */
+  type PagefindResult = {
+    id: string;
+    data: () => Promise<{
+      url: string;
+      meta: { title?: string };
+      excerpt: string;
+    }>;
+  };
+
+  type Pagefind = {
+    options: (opts: Record<string, unknown>) => Promise<void>;
+    debouncedSearch: (term: string, opts?: unknown, delay?: number) => Promise<{ results: PagefindResult[] } | null>;
+  };
+
+  const root = document.querySelector<HTMLElement>("[data-search-root]");
+  const input = document.getElementById("docs-search") as HTMLInputElement | null;
+  const panel = document.getElementById("docs-search-results");
+  const status = root?.querySelector<HTMLElement>("[data-search-status]");
+  const list = root?.querySelector<HTMLUListElement>("[data-search-list]");
+
+  if (root && input && panel && status && list) {
+    let pagefind: Pagefind | null = null;
+    let loading: Promise<Pagefind | null> | null = null;
+
+    const open = (isOpen: boolean) => {
+      panel.hidden = !isOpen;
+      input.setAttribute("aria-expanded", String(isOpen));
+    };
+
+    const say = (message: string) => {
+      status.textContent = message;
+      status.hidden = message === "";
+    };
+
+    async function load(): Promise<Pagefind | null> {
+      if (pagefind) return pagefind;
+      if (loading) return loading;
+      loading = (async () => {
+        try {
+          // The path is resolved at runtime; Vite must not try to bundle it.
+          const path = "/pagefind/pagefind.js";
+          const mod = (await import(/* @vite-ignore */ path)) as unknown as Pagefind;
+          await mod.options({ excerptLength: 24 });
+          pagefind = mod;
+          return mod;
+        } catch {
+          return null;
+        }
+      })();
+      return loading;
+    }
+
+    // Bound once here: narrowing from the guard above does not reach a hoisted function.
+    const results = list;
+
+    const render = (entries: { url: string; title: string; excerpt: string }[], term: string) => {
+      results.replaceChildren();
+      if (entries.length === 0) {
+        say(`Nothing matches “${term}”.`);
+        return;
+      }
+      say("");
+      for (const entry of entries) {
+        const item = document.createElement("li");
+        item.setAttribute("role", "presentation");
+        item.className = "border-b border-line last:border-b-0";
+
+        const link = document.createElement("a");
+        link.href = entry.url;
+        link.setAttribute("role", "option");
+        link.className =
+          "flex flex-col gap-1 px-4 py-3 no-underline transition-colors hover:bg-surface focus-visible:bg-surface";
+
+        const title = document.createElement("span");
+        title.className = "text-sm font-bold text-ink";
+        title.textContent = entry.title;
+
+        const excerpt = document.createElement("span");
+        excerpt.className = "text-[0.8125rem] leading-snug text-ink-muted [&_mark]:bg-transparent [&_mark]:text-brand-soft";
+        excerpt.innerHTML = entry.excerpt;
+
+        link.append(title, excerpt);
+        item.append(link);
+        results.append(item);
+      }
+    };
+
+    input.addEventListener("focus", () => void load(), { once: true });
+
+    input.addEventListener("input", async () => {
+      const term = input.value.trim();
+      if (term.length < 2) {
+        open(false);
+        list.replaceChildren();
+        return;
+      }
+
+      open(true);
+      const engine = await load();
+      if (!engine) {
+        say("Search needs the production build: run `npm run build`, then `npm run preview`.");
+        return;
+      }
+
+      say("Searching…");
+      const search = await engine.debouncedSearch(term);
+      if (!search) return; // Superseded by a newer keystroke.
+
+      const entries = await Promise.all(
+        search.results.slice(0, 8).map(async (result) => {
+          const data = await result.data();
+          return {
+            url: data.url.replace(/\.html$/, "/").replace(/\/+$/, "/"),
+            title: data.meta.title ?? "Untitled",
+            excerpt: data.excerpt,
+          };
+        }),
+      );
+
+      render(entries, term);
+    });
+
+    // "/" focuses the field from anywhere; Escape gives the page back.
+    document.addEventListener("keydown", (event) => {
+      const target = event.target as HTMLElement | null;
+      const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement;
+      if (event.key === "/" && !typing) {
+        event.preventDefault();
+        input.focus();
+      }
+      if (event.key === "Escape" && !panel.hidden) {
+        open(false);
+        input.blur();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!root.contains(event.target as Node)) open(false);
+    });
+
+    // Let the keyboard walk the result list straight out of the input.
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowDown") return;
+      const first = list.querySelector<HTMLAnchorElement>("a");
+      if (first) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  }
+</script>

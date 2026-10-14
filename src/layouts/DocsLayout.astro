@@ -1,0 +1,240 @@
+---
+import "../styles/global.css";
+import Seo from "../components/Seo.astro";
+import Logo from "../components/Logo.astro";
+import DocsSidebar from "../components/DocsSidebar.astro";
+import DocsSearch from "../components/DocsSearch.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import Icon from "../components/Icon.astro";
+import { SITE, LINKS, NAV } from "../config/site";
+import { docHref, groupDocs } from "../lib/docs";
+import type { Doc } from "../lib/docs";
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  doc: Doc;
+  docs: Doc[];
+  headings: MarkdownHeading[];
+  prev?: Doc;
+  next?: Doc;
+  editUrl: string;
+  jsonLd?: unknown[];
+}
+
+const { doc, docs, headings, prev, next, editUrl, jsonLd = [] } = Astro.props;
+const groups = groupDocs(docs);
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <Seo
+      title={`${doc.data.title} · Docs`}
+      description={doc.data.description}
+      image="/og/docs.png"
+      ogType="article"
+      jsonLd={jsonLd}
+      modifiedTime={doc.data.updated?.toISOString()}
+    />
+  </head>
+  <body class="flex min-h-screen flex-col bg-bg text-ink">
+    <a href="#doc" class="skip-link">Skip to content</a>
+
+    <!-- Docs top bar: its own shell, wider than the marketing pages. -->
+    <header class="sticky top-0 z-50 w-full border-b border-line bg-bg/90 backdrop-blur-md" data-pagefind-ignore>
+      <div class="container-wide flex items-center justify-between gap-4 py-3.5">
+        <div class="flex min-w-0 items-center gap-3.5">
+          <Logo size={32} wordmarkSize="1.125rem" />
+          <span class="text-line-strong" aria-hidden="true">/</span>
+          <a href="/docs/" class="text-[0.9375rem] text-ink-muted no-underline hover:text-ink">Docs</a>
+          <span class="pill hidden border-line text-accent sm:inline-block">v{SITE.version}</span>
+        </div>
+
+        <div class="flex min-w-0 items-center gap-3">
+          <DocsSearch class="flex-[0_1_20rem]" />
+          <nav aria-label="Site" class="hidden items-center gap-5 lg:flex">
+            {
+              NAV.filter((item) => item.href !== "/docs/").map((item) => (
+                <a href={item.href} class="text-sm text-ink-muted no-underline hover:text-ink">
+                  {item.label}
+                </a>
+              ))
+            }
+            <a
+              href={LINKS.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm font-bold text-ink no-underline hover:text-brand-soft">GitHub</a
+            >
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <div class="container-wide flex w-full flex-1 items-start gap-10 xl:gap-12">
+      <!-- Sidebar: a drawer on small screens, a rail from lg up. -->
+      <details
+        class="group w-full shrink-0 border-b border-line py-3 lg:hidden"
+        data-pagefind-ignore
+      >
+        <summary
+          class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 rounded-lg px-1 text-sm font-bold text-ink-muted"
+        >
+          Browse the documentation
+          <Icon name="chevron-down" size={18} class="transition-transform group-open:rotate-180" />
+        </summary>
+        <DocsSidebar groups={groups} class="pt-4" />
+      </details>
+
+      <DocsSidebar groups={groups} class="sticky top-[calc(var(--header-height)+1rem)] hidden max-h-[calc(100vh-6rem)] w-60 shrink-0 overflow-y-auto py-8 lg:flex" />
+
+      <!-- Article -->
+      <article
+        id="doc"
+        class="min-w-0 max-w-[48rem] flex-1 py-10 pb-18"
+        data-pagefind-body
+        data-pagefind-meta={`title:${doc.data.title}`}
+      >
+        <header class="flex flex-col gap-3.5">
+          {doc.data.eyebrow && <p class="eyebrow m-0">{doc.data.eyebrow}</p>}
+          <h1 class="m-0 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-[1.05] tracking-[-0.03em] text-ink">
+            {doc.data.title}
+          </h1>
+          <p class="m-0 text-lead text-ink-muted">{doc.data.description}</p>
+        </header>
+
+        <!-- Inline TOC for narrow screens, where the right rail is hidden. -->
+        <TableOfContents headings={headings} class="mt-8 xl:hidden" />
+
+        <div class="prose-gabier prose mt-8">
+          <slot />
+        </div>
+
+        <nav
+          aria-label="Documentation pages"
+          class="mt-14 flex flex-wrap justify-between gap-3 border-t border-line pt-6"
+          data-pagefind-ignore
+        >
+          {
+            prev ? (
+              <a
+                href={docHref(prev.id)}
+                class="flex min-h-11 flex-[1_1_12.5rem] flex-col gap-1 rounded-[0.625rem] border border-line px-4 py-3.5 no-underline transition-colors hover:border-line-strong"
+              >
+                <span class="font-mono text-xs text-ink-dim">← Previous</span>
+                <span class="font-bold text-ink">{prev.data.navTitle ?? prev.data.title}</span>
+              </a>
+            ) : (
+              <a
+                href="/"
+                class="flex min-h-11 flex-[1_1_12.5rem] flex-col gap-1 rounded-[0.625rem] border border-line px-4 py-3.5 no-underline transition-colors hover:border-line-strong"
+              >
+                <span class="font-mono text-xs text-ink-dim">← Previous</span>
+                <span class="font-bold text-ink">Home</span>
+              </a>
+            )
+          }
+          {
+            next && (
+              <a
+                href={docHref(next.id)}
+                class="flex min-h-11 flex-[1_1_12.5rem] flex-col items-end gap-1 rounded-[0.625rem] border border-line px-4 py-3.5 no-underline transition-colors hover:border-line-strong"
+              >
+                <span class="font-mono text-xs text-ink-dim">Next →</span>
+                <span class="font-bold text-ink">{next.data.navTitle ?? next.data.title}</span>
+              </a>
+            )
+          }
+        </nav>
+      </article>
+
+      <!-- Right rail -->
+      <aside
+        class="sticky top-[calc(var(--header-height)+1rem)] hidden max-h-[calc(100vh-6rem)] w-52 shrink-0 overflow-y-auto py-10 xl:block"
+        data-pagefind-ignore
+      >
+        <TableOfContents headings={headings} />
+        <a
+          href={editUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-6 inline-flex items-center gap-1.5 text-sm text-ink-dim no-underline hover:text-ink"
+        >
+          Edit this page
+          <span aria-hidden="true">↗</span>
+        </a>
+      </aside>
+    </div>
+
+    <footer class="mt-auto w-full border-t border-line bg-bg-deep" data-pagefind-ignore>
+      <div class="container-wide flex flex-wrap items-center justify-between gap-3 py-5 text-[0.8125rem] text-ink-dim">
+        <p class="m-0">&copy; {year} {SITE.name} &middot; {SITE.license} License</p>
+        <div class="flex gap-4.5">
+          <a href={editUrl} target="_blank" rel="noopener noreferrer" class="text-ink-muted no-underline hover:text-ink">
+            Edit this page
+          </a>
+          <a href={LINKS.issues} target="_blank" rel="noopener noreferrer" class="text-ink-muted no-underline hover:text-ink">
+            Report an issue
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      /**
+       * Markdown code fences are plain <pre> blocks; give each one the same
+       * copy affordance the hand-built <Terminal> blocks have.
+       */
+      const PROMPT = /^\s*[$#]\s+/;
+
+      document.querySelectorAll<HTMLPreElement>(".prose-gabier pre").forEach((pre) => {
+        const shell = document.createElement("div");
+        shell.dataset.terminal = "";
+        shell.className = "group relative";
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.clipboardPre = "";
+        button.className =
+          "absolute top-2.5 right-2.5 flex min-h-7 cursor-pointer items-center rounded-md border border-line bg-bg px-2.5 py-1 font-mono text-xs text-ink-muted opacity-0 transition hover:border-ink-dim hover:text-ink focus-visible:opacity-100 group-hover:opacity-100";
+        const label = document.createElement("span");
+        label.dataset.clipboardLabel = "";
+        label.textContent = "Copy";
+        button.append(label);
+        button.setAttribute("aria-label", "Copy this code block");
+
+        pre.parentElement?.insertBefore(shell, pre);
+        shell.append(pre, button);
+      });
+
+      async function copy(button: HTMLElement, pre: HTMLElement) {
+        const lines = (pre.innerText ?? "").replace(/\n+$/, "").split("\n");
+        const prompted = lines.filter((line) => PROMPT.test(line));
+        const text = (prompted.length > 0 ? prompted : lines)
+          .map((line) => line.replace(PROMPT, "").replace(/\s{2,}#.*$/, "").trimEnd())
+          .join("\n");
+
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          return;
+        }
+
+        const label = button.querySelector("[data-clipboard-label]");
+        if (label) label.textContent = "Copied";
+        button.classList.add("!border-accent", "!text-accent", "opacity-100");
+        window.setTimeout(() => {
+          if (label) label.textContent = "Copy";
+          button.classList.remove("!border-accent", "!text-accent", "opacity-100");
+        }, 1600);
+      }
+
+      document.addEventListener("click", (event) => {
+        const button = (event.target as HTMLElement | null)?.closest<HTMLElement>("[data-clipboard-pre]");
+        const pre = button?.closest<HTMLElement>("[data-terminal]")?.querySelector("pre");
+        if (button && pre) void copy(button, pre);
+      });
+    </script>
+  </body>
+</html>

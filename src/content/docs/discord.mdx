@@ -1,0 +1,86 @@
+---
+title: Discord
+eyebrow: Channels
+description: Create a Discord webhook for Gabier, keep the token out of the config file, and control the username and the pings fired on accepted logins or failures.
+group: Channels
+order: 1
+---
+
+import Callout from "../../components/Callout.astro";
+
+Discord needs a plain incoming webhook — no bot to invite, no OAuth scopes, no gateway connection.
+
+## Create the webhook
+
+1. Open the channel settings → **Integrations** → **Webhooks** → **New webhook**.
+2. Name it Gabier, copy the webhook URL.
+3. Put it in the config, or in the environment file, then run `gabier check`.
+
+```toml
+[discord]
+webhook_url = "https://discord.com/api/webhooks/…"
+username = "Gabier"
+ping = "<@123456789>"
+ping_on_accepted = true
+ping_on_failure = false
+```
+
+Or, keeping the token out of the config entirely:
+
+```shellsession
+$ echo 'GABIER_DISCORD_WEBHOOK=https://discord.com/api/webhooks/...' \
+    | sudo tee /etc/gabier/env >/dev/null
+$ sudo chmod 600 /etc/gabier/env
+```
+
+## What a notification looks like
+
+An embed that reads cleanly on a phone lock screen:
+
+```
+🔓 Connexion SSH acceptée
+Clé `ED25519 SHA256:T9mQ0kR1vZ8pL2xH7bN4...`
+Utilisateur `root`   IP `203.0.113.42`
+Méthode `publickey`  Port 51288
+                                     vps-prod-1 • 09:03
+```
+
+A burst of refused attempts collapses into one summary instead:
+
+```
+🚨 Rafale de tentatives SSH
+43 tentatives refusées depuis 185.243.96.107.
+Comptes visés  admin, oracle, postgres, test, ubuntu
+```
+
+`username` overrides the webhook's own name per message, so one channel can host several servers and still be
+readable.
+
+## Pings
+
+`ping` is inserted as message content above the embed, which is what makes Discord push a notification to your
+phone. It fires only where you allow it: `ping_on_accepted` for successful logins, `ping_on_failure` for
+failures and burst summaries. Both are `false` by default.
+
+| Value | Pings |
+| --- | --- |
+| `<@123456789>` | One user, by ID. |
+| `<@&123456789>` | One role, by ID. |
+
+To get an ID, enable **Settings → Advanced → Developer Mode**, then right-click the user or role and choose
+**Copy ID**.
+
+<Callout title="A username in a log line cannot ping your server.">
+  Gabier sends a restrictive <code>allowed_mentions</code> with every payload, so only the ping you configured
+  can resolve. Someone attempting a login as <code>@everyone</code> gets rendered as plain text.
+</Callout>
+
+## If Discord replies with an error
+
+| Status | Meaning |
+| --- | --- |
+| `401` / `404` | The webhook was deleted, or the URL is truncated. Create a new one and paste the whole thing. |
+| `429` | Rate limited. Gabier backs off and retries; a sustained 429 means the throttle window is too short for your traffic. |
+
+`gabier check` reaches the webhook without posting, and prints the failure for every destination rather than
+stopping at the first.

@@ -1,0 +1,32 @@
+---
+import Icon from "./Icon.astro";
+
+export interface Props {
+  variant?: "info" | "warning";
+  title?: string;
+  class?: string;
+}
+
+const { variant = "info", title, class: className = "" } = Astro.props;
+
+const styles = {
+  info: { border: "border-l-accent", icon: "text-accent", name: "info" },
+  warning: { border: "border-l-brand", icon: "text-brand", name: "warning" },
+} as const;
+
+const style = styles[variant];
+---
+
+<aside
+  class:list={[
+    "not-prose my-6 flex gap-3 rounded-[0.625rem] border border-line border-l-[3px] bg-surface px-4 py-3.5",
+    style.border,
+    className,
+  ]}
+>
+  <Icon name={style.name} size={20} class={`mt-0.5 shrink-0 ${style.icon}`} />
+  <div class="min-w-0 text-sm leading-relaxed text-ink-muted [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_a]:text-brand-soft [&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-ink [&_strong]:text-ink">
+    {title && <strong class="mr-1 text-ink">{title}</strong>}
+    <slot />
+  </div>
+</aside>

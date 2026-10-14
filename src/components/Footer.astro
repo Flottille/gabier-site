@@ -1,0 +1,83 @@
+---
+import Logo from "./Logo.astro";
+import CommandChip from "./CommandChip.astro";
+import { SITE, LINKS, INSTALL_ONELINER } from "../config/site";
+
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: "Product",
+    links: [
+      { href: "/features/", label: "Features" },
+      { href: "/how-it-works/", label: "How it works" },
+      { href: "/install/", label: "Install" },
+      { href: LINKS.releases, label: "Releases", external: true },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { href: "/docs/", label: "Documentation" },
+      { href: "/docs/configuration/", label: "Configuration" },
+      { href: LINKS.exampleConfig, label: "Example config", external: true },
+      { href: LINKS.serviceUnit, label: "systemd unit", external: true },
+      { href: LINKS.installScript, label: "install.sh", external: true },
+    ],
+  },
+  {
+    title: "Community",
+    links: [
+      { href: LINKS.github, label: "GitHub", external: true },
+      { href: LINKS.issues, label: "Report a bug", external: true },
+      { href: LINKS.discussions, label: "Discussions", external: true },
+      { href: LINKS.contributing, label: "Contribute", external: true },
+    ],
+  },
+];
+---
+
+<footer class="mt-auto w-full border-t border-line bg-bg-deep">
+  <div class="container-site flex flex-col gap-10 pt-14 pb-6">
+    <div class="flex flex-wrap items-start gap-10">
+      <div class="flex min-w-0 flex-[2_1_17.5rem] flex-col gap-3.5">
+        <Logo size={40} wordmarkSize="1.375rem" />
+        <p class="max-w-[22.5rem] text-[0.9375rem] leading-relaxed text-ink-muted">
+          A <em>gabier</em> is the sailor who climbs to the crow&rsquo;s nest. Pince climbs up for you and shouts
+          the moment someone boards.
+        </p>
+        <CommandChip command={INSTALL_ONELINER} class="self-start" size="sm" />
+      </div>
+
+      {
+        columns.map((column) => (
+          <nav aria-label={column.title} class="flex min-w-0 flex-[1_1_9.375rem] flex-col gap-3">
+            <h2 class="font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">{column.title}</h2>
+            {column.links.map((link) => (
+              <a
+                href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
+                class="flex min-h-7 items-center text-[0.9375rem] leading-snug text-ink-muted no-underline transition-colors hover:text-brand-soft"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        ))
+      }
+    </div>
+
+    <div
+      class="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5 text-[0.8125rem] text-ink-dim"
+    >
+      <p class="m-0">
+        &copy; {year} {SITE.name} &middot; {SITE.license} License &middot; Made in Rust, in France.
+      </p>
+      <p class="m-0 flex items-center gap-2">
+        <span class="inline-block size-2 rounded-full bg-accent" aria-hidden="true"></span>
+        Pince is on watch
+      </p>
+    </div>
+  </div>
+</footer>

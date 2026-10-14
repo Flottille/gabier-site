@@ -1,0 +1,27 @@
+---
+import Icon from "./Icon.astro";
+import type { IconName } from "../lib/icons";
+
+export interface Props {
+  icon?: IconName;
+  title: string;
+  /** Heading level, so each page keeps a sane outline. */
+  as?: "h2" | "h3";
+  class?: string;
+}
+
+const { icon, title, as: Heading = "h3", class: className = "" } = Astro.props;
+---
+
+<article
+  class:list={[
+    "card flex min-w-0 flex-col gap-3 p-6 transition-colors duration-200 hover:border-line-strong",
+    className,
+  ]}
+>
+  {icon && <Icon name={icon} size={28} class="text-accent" />}
+  <Heading class="m-0 text-h3 font-bold text-ink">{title}</Heading>
+  <p class="m-0 text-[0.9375rem] leading-relaxed text-ink-muted">
+    <slot />
+  </p>
+</article>

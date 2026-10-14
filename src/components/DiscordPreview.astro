@@ -1,0 +1,55 @@
+---
+import { Image } from "astro:assets";
+import pince from "../assets/pince.png";
+import { SITE } from "../config/site";
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+
+/** A representative accepted-login payload, matching what the daemon actually sends. */
+const fields = [
+  { label: "User", value: "thibault" },
+  { label: "From", value: "203.0.113.7" },
+  { label: "Method", value: "publickey ED25519" },
+  { label: "Source port", value: "51234" },
+];
+---
+
+<figure class:list={["m-0 flex min-w-0 gap-3.5 rounded-xl bg-[#313338] p-4.5", className]}>
+  <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-bg">
+    <Image src={pince} alt="" width={72} height={72} class="size-9 object-contain" loading="lazy" />
+  </span>
+
+  <div class="flex min-w-0 flex-1 flex-col gap-1.5">
+    <div class="flex flex-wrap items-baseline gap-2">
+      <span class="text-[0.9375rem] font-bold text-brand-soft">{SITE.name}</span>
+      <span class="rounded-[0.25rem] bg-discord px-1.5 py-px text-[0.625rem] font-bold text-white">APP</span>
+      <span class="text-xs text-[#949BA4]">Today at 19:57</span>
+    </div>
+
+    <div class="flex flex-col gap-2 rounded border-l-4 border-brand bg-[#2B2D31] px-3 py-2.5 text-[#DBDEE1]">
+      <p class="m-0 text-[0.9375rem] font-bold text-ink">Someone is boarding</p>
+      <p class="m-0 text-[0.8125rem]">
+        SSH login accepted on <strong class="font-bold">vps-dedie-01</strong>.
+      </p>
+      <dl class="m-0 grid grid-cols-2 gap-x-3.5 gap-y-2 text-xs">
+        {
+          fields.map((field) => (
+            <div class="flex min-w-0 flex-col gap-0.5">
+              <dt class="font-sans font-bold text-ink">{field.label}</dt>
+              <dd class="m-0 truncate font-mono">{field.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  <figcaption class="sr-only">
+    A Discord message from the Gabier app: &ldquo;Someone is boarding — SSH login accepted on vps-dedie-01&rdquo;,
+    listing the user, source IP, authentication method and source port.
+  </figcaption>
+</figure>

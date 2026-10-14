@@ -1,0 +1,73 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+  class?: string;
+}
+
+const { headings, class: className = "" } = Astro.props;
+
+/** Only h2/h3 — deeper levels make the rail unreadable. */
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{
+  items.length > 1 && (
+    <nav aria-labelledby="toc-heading" class:list={["flex flex-col gap-3", className]} data-pagefind-ignore>
+      <h2 id="toc-heading" class="font-mono text-xs font-medium tracking-[0.16em] text-accent uppercase">
+        On this page
+      </h2>
+      <ul class="m-0 flex list-none flex-col gap-0.5 border-l border-line p-0">
+        {items.map((heading) => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              data-toc-link={heading.slug}
+              class:list={[
+                "-ml-px flex border-l-2 border-transparent py-1.5 text-sm leading-snug text-ink-muted no-underline transition-colors hover:text-ink",
+                heading.depth === 3 ? "pl-6" : "pl-3",
+              ]}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  /** Highlights the heading currently in view, so the rail tracks the reader. */
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"));
+  if (links.length > 0) {
+    const ACTIVE = ["!border-brand", "!text-ink", "font-bold"];
+    const bySlug = new Map(links.map((link) => [link.dataset.tocLink, link]));
+    let current: HTMLAnchorElement | null = null;
+
+    const activate = (slug: string | undefined) => {
+      const next = slug ? bySlug.get(slug) : undefined;
+      if (!next || next === current) return;
+      current?.classList.remove(...ACTIVE);
+      next.classList.add(...ACTIVE);
+      current = next;
+    };
+
+    const targets = links
+      .map((link) => document.getElementById(link.dataset.tocLink ?? ""))
+      .filter((element): element is HTMLElement => element !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (visible) activate(visible.target.id);
+      },
+      { rootMargin: "-20% 0px -70% 0px", threshold: 0 },
+    );
+
+    targets.forEach((target) => observer.observe(target));
+  }
+</script>

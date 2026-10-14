@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabier docs — Getting started</title>
+<meta name="description" content="Gabier documentation: getting started, configuration reference, CLI, channels, troubleshooting.">
+<link rel="icon" type="image/png" href="../assets/pince.png">
+<meta property="og:title" content="Gabier docs — Getting started">
+<meta property="og:description" content="Gabier documentation: getting started, configuration reference, CLI, channels, troubleshooting.">
+<meta property="og:image" content="../assets/pince.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+body{margin:0;font-family:'Space Grotesk',system-ui,sans-serif;color:#F4EFE6;background:#0F1B2D}
+a{color:#F2A27A}a:hover{color:#FFC7A8}
+code{font-family:'IBM Plex Mono',monospace;font-size:0.92em;background:#132238;border:1px solid #22344F;border-radius:5px;padding:1px 6px;color:#F4EFE6}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8CA3;padding:10px 12px;border-bottom:1px solid #22344F;font-family:'IBM Plex Mono',monospace;font-weight:500}
+td{padding:12px;border-bottom:1px solid #22344F;font-size:15px;line-height:1.5;color:#BFC9D8;vertical-align:top}
+td:first-child{white-space:nowrap}
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; background: #0F1B2D; display: flex; flex-direction: column">
+
+  <!-- Top bar -->
+  <header style="width: 100%; box-sizing: border-box; border-bottom: 1px solid #22344F; background: #0F1B2D">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 24px; box-sizing: border-box; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: row; align-items: center; gap: 14px; flex-wrap: wrap">
+        <a href="../index.html" style="display: flex; flex-direction: row; align-items: center; gap: 10px; text-decoration: none; color: #F4EFE6">
+          <span style="width: 32px; height: 32px; border-radius: 8px; background: #E8613A; display: flex; align-items: center; justify-content: center"><img src="../assets/pince.png" alt="" style="width: 28px; height: 28px; object-fit: contain"></span>
+          <span style="font-weight: 700; font-size: 18px">Gabier</span>
+        </a>
+        <span style="color: #3A4F6E">/</span>
+        <span style="font-size: 15px; color: #BFC9D8">Docs</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #2BB5A0; border: 1px solid #22344F; border-radius: 999px; padding: 3px 10px">v0.1.0</span>
+      </div>
+      <form role="search" style="display: flex; flex-direction: row; align-items: center; gap: 8px; margin: 0; flex: 0 1 320px; min-width: 0">
+        <label for="docs-search" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search the docs</label>
+        <input id="docs-search" type="search" placeholder="Search the docs…" style="flex: 1 1 0; min-width: 0; height: 40px; box-sizing: border-box; border-radius: 8px; border: 1px solid #22344F; background: #132238; color: #F4EFE6; padding: 0 12px; font-family: 'Space Grotesk', sans-serif; font-size: 14px">
+        <kbd style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3; border: 1px solid #22344F; border-radius: 5px; padding: 3px 7px">/</kbd>
+      </form>
+    </div>
+  </header>
+
+  <!-- Body: sidebar + content -->
+  <div style="max-width: 1280px; width: 100%; margin: 0 auto; padding: 0 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+
+    <nav aria-label="Docs navigation" style="flex: 1 1 220px; max-width: 260px; min-width: 0; padding: 32px 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #2BB5A0; padding: 0 12px 8px">Getting started</div>
+        <a href="#install" aria-current="page" style="font-size: 15px; color: #F4EFE6; background: #132238; border-left: 2px solid #E8613A; text-decoration: none; padding: 9px 12px; border-radius: 0 8px 8px 0; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">Install</a>
+        <a href="#configure" style="font-size: 15px; color: #BFC9D8; text-decoration: none; padding: 9px 12px; border-left: 2px solid transparent; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">Configure</a>
+        <a href="#service" style="font-size: 15px; color: #BFC9D8; text-decoration: none; padding: 9px 12px; border-left: 2px solid transparent; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">Run as a service</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #2BB5A0; padding: 0 12px 8px">Reference</div>
+        <a href="#config-ref" style="font-size: 15px; color: #BFC9D8; text-decoration: none; padding: 9px 12px; border-left: 2px solid transparent; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">Configuration</a>
+        <a href="#cli" style="font-size: 15px; color: #BFC9D8; text-decoration: none; padding: 9px 12px; border-left: 2px solid transparent; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">CLI</a>
+        <a href="#events" style="font-size: 15px; color: #BFC9D8; text-decoration: none; padding: 9px 12px; border-left: 2px solid transparent; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">Events</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #2BB5A0; padding: 0 12px 8px">Channels</div>
+        <a href="#discord" style="font-size: 15px; color: #BFC9D8; text-decoration: none; padding: 9px 12px; border-left: 2px solid transparent; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">Discord</a>
+        <a href="#slack" style="font-size: 15px; color: #BFC9D8; text-decoration: none; padding: 9px 12px; border-left: 2px solid transparent; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">Slack</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #2BB5A0; padding: 0 12px 8px">More</div>
+        <a href="#troubleshooting" style="font-size: 15px; color: #BFC9D8; text-decoration: none; padding: 9px 12px; border-left: 2px solid transparent; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">Troubleshooting</a>
+        <a href="https://github.com/[TON_USER]/gabier" style="font-size: 15px; color: #BFC9D8; text-decoration: none; padding: 9px 12px; border-left: 2px solid transparent; min-height: 40px; box-sizing: border-box; display: flex; align-items: center">GitHub</a>
+      </div>
+    </nav>
+
+    <main style="flex: 999 1 560px; min-width: 0; max-width: 760px; padding: 40px 0 72px; box-sizing: border-box; display: flex; flex-direction: column; gap: 48px">
+
+      <!-- Intro -->
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: #2BB5A0">Getting started</div>
+        <h1 style="margin: 0; font-size: 44px; line-height: 1.05; font-weight: 700; letter-spacing: -0.03em">Put Pince on watch in two minutes</h1>
+        <p style="margin: 0; font-size: 18px; line-height: 1.55; color: #BFC9D8">Gabier is a small Rust daemon that follows your sshd logs and sends a notification to Discord or Slack whenever a login is accepted. This page takes you from zero to a running service.</p>
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; margin-top: 4px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 4px 10px">Linux · systemd</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 4px 10px">Rust 1.75+</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 4px 10px">root for /etc</span>
+        </div>
+      </div>
+
+      <!-- Install -->
+      <section id="install" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; display: flex; flex-direction: row; align-items: center; gap: 12px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #2BB5A0">01</span>Install</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">From crates.io, or build from source. Either way you end up with one static binary.</p>
+        <div style="background: #132238; border: 1px solid #22344F; border-radius: 12px; overflow: hidden">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid #22344F; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3"><span>shell</span><button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; background: transparent; border: 1px solid #22344F; border-radius: 6px; padding: 4px 10px; min-height: 28px; cursor: pointer">Copy</button></div>
+          <pre style="margin: 0; padding: 16px 18px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #2BB5A0">$</span> cargo install gabier
+<span style="color: #2BB5A0">$</span> sudo install -m755 ~/.cargo/bin/gabier /usr/local/bin/gabier</pre>
+        </div>
+        <div style="display: flex; flex-direction: row; gap: 12px; background: #132238; border: 1px solid #22344F; border-left: 3px solid #2BB5A0; border-radius: 10px; padding: 14px 16px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: 0 0 auto; margin-top: 2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #BFC9D8"><strong style="color: #F4EFE6">No Rust on the server?</strong> Build on your machine with <code>cargo build --release --target x86_64-unknown-linux-musl</code> and copy <code>target/…/gabier</code> over. Prebuilt binaries will be on the releases page.</p>
+        </div>
+      </section>
+
+      <!-- Configure -->
+      <section id="configure" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; display: flex; flex-direction: row; align-items: center; gap: 12px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #2BB5A0">02</span>Configure</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Generate the example config, then paste at least one webhook. The file holds a secret, so keep it <code>600</code>.</p>
+        <div style="background: #132238; border: 1px solid #22344F; border-radius: 12px; overflow: hidden">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid #22344F; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3"><span>shell</span><button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; background: transparent; border: 1px solid #22344F; border-radius: 6px; padding: 4px 10px; min-height: 28px; cursor: pointer">Copy</button></div>
+          <pre style="margin: 0; padding: 16px 18px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #2BB5A0">$</span> sudo mkdir -p /etc/gabier
+<span style="color: #2BB5A0">$</span> gabier init | sudo tee /etc/gabier/config.toml >/dev/null
+<span style="color: #2BB5A0">$</span> sudo chmod 600 /etc/gabier/config.toml
+<span style="color: #2BB5A0">$</span> sudoedit /etc/gabier/config.toml</pre>
+        </div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">A minimal config looks like this:</p>
+        <div style="background: #132238; border: 1px solid #22344F; border-radius: 12px; overflow: hidden">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid #22344F; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3"><span>/etc/gabier/config.toml</span><button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; background: transparent; border: 1px solid #22344F; border-radius: 6px; padding: 4px 10px; min-height: 28px; cursor: pointer">Copy</button></div>
+          <pre style="margin: 0; padding: 16px 18px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #7C8CA3"># hostname = "vps-01"      # defaults to /etc/hostname</span>
+
+<span style="color: #F2A27A">[events]</span>
+accepted = <span style="color: #2BB5A0">true</span>
+failed = <span style="color: #2BB5A0">false</span>
+ignore_ips = [<span style="color: #2BB5A0">"203.0.113.7"</span>]   <span style="color: #7C8CA3"># your static IP</span>
+
+<span style="color: #F2A27A">[discord]</span>
+webhook_url = <span style="color: #2BB5A0">"https://discord.com/api/webhooks/…"</span>
+mention = <span style="color: #2BB5A0">"@here"</span></pre>
+        </div>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Then check it and fire a test notification on every configured channel:</p>
+        <div style="background: #132238; border: 1px solid #22344F; border-radius: 12px; overflow: hidden">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid #22344F; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3"><span>shell</span><button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; background: transparent; border: 1px solid #22344F; border-radius: 6px; padding: 4px 10px; min-height: 28px; cursor: pointer">Copy</button></div>
+          <pre style="margin: 0; padding: 16px 18px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #2BB5A0">$</span> sudo gabier check
+<span style="color: #2BB5A0">$</span> sudo gabier test
+Notification de test envoyée sur discord.
+Pince te fait coucou depuis la hune.</pre>
+        </div>
+      </section>
+
+      <!-- Service -->
+      <section id="service" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; display: flex; flex-direction: row; align-items: center; gap: 12px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #2BB5A0">03</span>Run as a service</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">The shipped unit runs Gabier as a dynamic user with a read-only system and no capabilities. It only needs to read the journal and reach HTTPS.</p>
+        <div style="background: #132238; border: 1px solid #22344F; border-radius: 12px; overflow: hidden">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 8px 14px; border-bottom: 1px solid #22344F; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3"><span>shell</span><button type="button" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; background: transparent; border: 1px solid #22344F; border-radius: 6px; padding: 4px 10px; min-height: 28px; cursor: pointer">Copy</button></div>
+          <pre style="margin: 0; padding: 16px 18px; overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #2BB5A0">$</span> sudo install -m644 gabier.service /etc/systemd/system/
+<span style="color: #2BB5A0">$</span> sudo systemctl daemon-reload
+<span style="color: #2BB5A0">$</span> sudo systemctl enable --now gabier
+<span style="color: #2BB5A0">$</span> journalctl -fu gabier</pre>
+        </div>
+        <div style="display: flex; flex-direction: row; gap: 12px; background: #132238; border: 1px solid #22344F; border-left: 3px solid #E8613A; border-radius: 10px; padding: 14px 16px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8613A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto; margin-top: 2px"><path d="M12 3l9 16H3z"></path><path d="M12 10v4M12 17h.01"></path></svg>
+          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #BFC9D8"><strong style="color: #F4EFE6">Now open an SSH session from another machine.</strong> Pince should shout in your channel within a second. If nothing shows up, jump to <a href="#troubleshooting">Troubleshooting</a>.</p>
+        </div>
+      </section>
+
+      <!-- Config reference -->
+      <section id="config-ref" style="display: flex; flex-direction: column; gap: 16px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: #2BB5A0">Reference</div>
+        <h2 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">Configuration</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Unknown keys are rejected, so a typo fails loudly at <code>gabier check</code> rather than silently at 3 am.</p>
+        <div style="overflow-x: auto; border: 1px solid #22344F; border-radius: 12px">
+          <table>
+            <thead><tr><th>Key</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>hostname</code></td><td><code>/etc/hostname</code></td><td>Name shown in notifications.</td></tr>
+              <tr><td><code>source.kind</code></td><td><code>"journald"</code></td><td><code>journald</code> follows <code>journalctl -f</code>; <code>file</code> tails a log file, rotation aware.</td></tr>
+              <tr><td><code>source.units</code></td><td><code>["ssh.service", "sshd.service"]</code></td><td>systemd units to follow (journald only).</td></tr>
+              <tr><td><code>source.path</code></td><td>—</td><td>Log file to tail (file only): <code>/var/log/auth.log</code>, <code>/var/log/secure</code>.</td></tr>
+              <tr><td><code>events.accepted</code></td><td><code>true</code></td><td>Notify accepted logins.</td></tr>
+              <tr><td><code>events.failed</code></td><td><code>false</code></td><td>Notify failed attempts. Noisy on an exposed VPS; pair with fail2ban.</td></tr>
+              <tr><td><code>events.disconnected</code></td><td><code>false</code></td><td>Notify disconnects.</td></tr>
+              <tr><td><code>events.ignore_users</code></td><td><code>[]</code></td><td>Users to stay quiet about (a backup account, for instance).</td></tr>
+              <tr><td><code>events.ignore_ips</code></td><td><code>[]</code></td><td>Source IPs to stay quiet about (your static IP).</td></tr>
+              <tr><td><code>discord.webhook_url</code></td><td>—</td><td>Discord webhook. <strong style="color: #F4EFE6">Secret.</strong></td></tr>
+              <tr><td><code>discord.username</code></td><td><code>"Gabier"</code></td><td>Bot name shown in Discord.</td></tr>
+              <tr><td><code>discord.avatar_url</code></td><td>—</td><td>Public PNG for the avatar. Put Pince there.</td></tr>
+              <tr><td><code>discord.mention</code></td><td>—</td><td><code>&lt;@id&gt;</code>, <code>&lt;@&amp;role&gt;</code> or <code>@here</code>, on accepted logins only.</td></tr>
+              <tr><td><code>slack.webhook_url</code></td><td>—</td><td>Slack incoming webhook. <strong style="color: #F4EFE6">Secret.</strong></td></tr>
+              <tr><td><code>slack.channel</code></td><td>webhook default</td><td>Target channel, e.g. <code>"#server-alerts"</code>.</td></tr>
+              <tr><td><code>slack.mention</code></td><td>—</td><td><code>&lt;@U…&gt;</code>, <code>&lt;!here&gt;</code> or <code>&lt;!subteam^S…&gt;</code>, on accepted logins only.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #7C8CA3">At least one of <code>[discord]</code> and <code>[slack]</code> must be present. Both may be.</p>
+      </section>
+
+      <!-- CLI -->
+      <section id="cli" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">CLI</h2>
+        <div style="overflow-x: auto; border: 1px solid #22344F; border-radius: 12px">
+          <table>
+            <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>gabier watch</code></td><td>Climb the mast and watch. The default when no subcommand is given.</td></tr>
+              <tr><td><code>gabier test</code></td><td>Send a test notification on every configured channel.</td></tr>
+              <tr><td><code>gabier check</code></td><td>Validate the config and print it.</td></tr>
+              <tr><td><code>gabier init</code></td><td>Print the example config to stdout.</td></tr>
+              <tr><td><code>-c, --config &lt;path&gt;</code></td><td>Config file. Defaults to <code>/etc/gabier/config.toml</code> or <code>$GABIER_CONFIG</code>.</td></tr>
+              <tr><td><code>RUST_LOG=gabier=debug</code></td><td>Log every line read from the source.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Events -->
+      <section id="events" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">Events</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Gabier recognizes three sshd log lines. Everything else is ignored.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px; align-items: center; background: #132238; border: 1px solid #22344F; border-radius: 10px; padding: 12px 14px">
+            <span style="width: 10px; height: 10px; border-radius: 5px; background: #E8613A; flex: 0 0 auto"></span>
+            <span style="font-weight: 700; flex: 0 0 120px">Accepted</span>
+            <code style="flex: 1 1 320px; min-width: 0; overflow-x: auto; white-space: nowrap">Accepted publickey for alice from 203.0.113.7 port 51234 ssh2: ED25519 SHA256:…</code>
+          </div>
+          <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px; align-items: center; background: #132238; border: 1px solid #22344F; border-radius: 10px; padding: 12px 14px">
+            <span style="width: 10px; height: 10px; border-radius: 5px; background: #D64545; flex: 0 0 auto"></span>
+            <span style="font-weight: 700; flex: 0 0 120px">Failed</span>
+            <code style="flex: 1 1 320px; min-width: 0; overflow-x: auto; white-space: nowrap">Failed password for invalid user admin from 203.0.113.9 port 2222 ssh2</code>
+          </div>
+          <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px; align-items: center; background: #132238; border: 1px solid #22344F; border-radius: 10px; padding: 12px 14px">
+            <span style="width: 10px; height: 10px; border-radius: 5px; background: #7C8CA3; flex: 0 0 auto"></span>
+            <span style="font-weight: 700; flex: 0 0 120px">Disconnected</span>
+            <code style="flex: 1 1 320px; min-width: 0; overflow-x: auto; white-space: nowrap">Disconnected from user alice 203.0.113.7 port 51234</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- Discord -->
+      <section id="discord" style="display: flex; flex-direction: column; gap: 16px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: #2BB5A0">Channels</div>
+        <h2 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">Discord</h2>
+        <ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.55; color: #BFC9D8">
+          <li>Open the channel settings → <strong style="color: #F4EFE6">Integrations</strong> → <strong style="color: #F4EFE6">Webhooks</strong> → <strong style="color: #F4EFE6">New webhook</strong>.</li>
+          <li>Name it Gabier, upload Pince as the avatar, copy the webhook URL.</li>
+          <li>Paste it as <code>discord.webhook_url</code>. Run <code>gabier test</code>.</li>
+        </ol>
+      </section>
+
+      <!-- Slack -->
+      <section id="slack" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">Slack</h2>
+        <ol style="margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.55; color: #BFC9D8">
+          <li>Create an app at <a href="https://api.slack.com/apps">api.slack.com/apps</a> → <strong style="color: #F4EFE6">Incoming Webhooks</strong> → turn it on.</li>
+          <li><strong style="color: #F4EFE6">Add New Webhook to Workspace</strong>, pick the channel, copy the URL.</li>
+          <li>Paste it as <code>slack.webhook_url</code>. Messages use Block Kit with a plain-text fallback for push notifications.</li>
+        </ol>
+      </section>
+
+      <!-- Troubleshooting -->
+      <section id="troubleshooting" style="display: flex; flex-direction: column; gap: 16px">
+        <h2 style="margin: 0; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em">Troubleshooting</h2>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <details style="background: #132238; border: 1px solid #22344F; border-radius: 10px; padding: 0 16px">
+            <summary style="font-size: 16px; font-weight: 700; padding: 14px 0; cursor: pointer; min-height: 44px; box-sizing: border-box">Nothing shows up after a login</summary>
+            <p style="margin: 0 0 14px; font-size: 15px; line-height: 1.55; color: #BFC9D8">Run <code>RUST_LOG=gabier=debug gabier watch</code> in a terminal and log in again. If no lines appear, the source is wrong: check <code>systemctl status ssh sshd</code> for the real unit name, or switch to <code>kind = "file"</code>.</p>
+          </details>
+          <details style="background: #132238; border: 1px solid #22344F; border-radius: 10px; padding: 0 16px">
+            <summary style="font-size: 16px; font-weight: 700; padding: 14px 0; cursor: pointer; min-height: 44px; box-sizing: border-box">journalctl: permission denied</summary>
+            <p style="margin: 0 0 14px; font-size: 15px; line-height: 1.55; color: #BFC9D8">The unit adds the <code>systemd-journal</code> group. If you run Gabier by hand, use <code>sudo</code> or add your user to that group.</p>
+          </details>
+          <details style="background: #132238; border: 1px solid #22344F; border-radius: 10px; padding: 0 16px">
+            <summary style="font-size: 16px; font-weight: 700; padding: 14px 0; cursor: pointer; min-height: 44px; box-sizing: border-box">Discord replied 401 / 404</summary>
+            <p style="margin: 0 0 14px; font-size: 15px; line-height: 1.55; color: #BFC9D8">The webhook was deleted or the URL is truncated. Create a new one and paste the whole URL, token included.</p>
+          </details>
+          <details style="background: #132238; border: 1px solid #22344F; border-radius: 10px; padding: 0 16px">
+            <summary style="font-size: 16px; font-weight: 700; padding: 14px 0; cursor: pointer; min-height: 44px; box-sizing: border-box">Too many messages</summary>
+            <p style="margin: 0 0 14px; font-size: 15px; line-height: 1.55; color: #BFC9D8">Set <code>events.failed = false</code>, add your IP to <code>ignore_ips</code> and your automation accounts to <code>ignore_users</code>. Burst dedup is on the roadmap.</p>
+          </details>
+        </div>
+      </section>
+
+      <!-- Prev/next -->
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-top: 1px solid #22344F; padding-top: 24px">
+        <a href="../index.html" style="flex: 1 1 200px; text-decoration: none; color: #BFC9D8; border: 1px solid #22344F; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-height: 44px; box-sizing: border-box"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3">← Previous</span><span style="font-weight: 700; color: #F4EFE6">Home</span></a>
+        <a href="#config-ref" style="flex: 1 1 200px; text-decoration: none; color: #BFC9D8; border: 1px solid #22344F; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; align-items: flex-end; min-height: 44px; box-sizing: border-box"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3">Next →</span><span style="font-weight: 700; color: #F4EFE6">Configuration reference</span></a>
+      </div>
+    </main>
+  </div>
+
+  <footer style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F; margin-top: auto; background: #0B1424">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 20px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: #7C8CA3">
+      <span>© 2026 Gabier · MIT License</span>
+      <div style="display: flex; flex-direction: row; gap: 18px">
+        <a href="https://github.com/[TON_USER]/gabier/edit/main/docs/getting-started.md" style="color: #BFC9D8; text-decoration: none">Edit this page</a>
+        <a href="https://github.com/[TON_USER]/gabier/issues" style="color: #BFC9D8; text-decoration: none">Report an issue</a>
+      </div>
+    </div>
+  </footer>
+</div>
+<script src="../assets/site.js"></script>
+</body>
+</html>

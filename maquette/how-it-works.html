@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabier — How it works</title>
+<meta name="description" content="Watch, recognize, shout: the three-stage pipeline behind Gabier.">
+<link rel="icon" type="image/png" href="assets/pince.png">
+<meta property="og:title" content="Gabier — How it works">
+<meta property="og:description" content="Watch, recognize, shout: the three-stage pipeline behind Gabier.">
+<meta property="og:image" content="assets/pince.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+body{margin:0;font-family:'Space Grotesk',system-ui,sans-serif;color:#F4EFE6;background:#0F1B2D}
+a{color:#F2A27A}a:hover{color:#FFC7A8}
+code{font-family:'IBM Plex Mono',monospace;font-size:0.92em;background:#132238;border:1px solid #22344F;border-radius:5px;padding:1px 6px;color:#F4EFE6}
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; background: #0F1B2D; display: flex; flex-direction: column">
+
+  <header style="width: 100%; box-sizing: border-box; border-bottom: 1px solid #22344F">
+    <nav style="max-width: 1120px; margin: 0 auto; padding: 18px 24px; box-sizing: border-box; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+      <a href="index.html" style="display: flex; flex-direction: row; align-items: center; gap: 12px; text-decoration: none; color: #F4EFE6">
+        <span style="width: 36px; height: 36px; border-radius: 9px; background: #E8613A; display: flex; align-items: center; justify-content: center"><img src="assets/pince.png" alt="" style="width: 32px; height: 32px; object-fit: contain"></span>
+        <span style="font-weight: 700; font-size: 20px; letter-spacing: -0.01em">Gabier</span>
+      </a>
+      <div style="display: flex; flex-direction: row; gap: 24px; align-items: center; flex-wrap: wrap">
+        <a href="features.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Features</a>
+        <a href="how-it-works.html" aria-current="page" style="font-size: 15px; color: #F4EFE6; text-decoration: none; border-bottom: 2px solid #E8613A; padding-bottom: 2px">How it works</a>
+        <a href="install.html" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Install</a>
+        <a href="docs/" style="font-size: 15px; color: #BFC9D8; text-decoration: none">Docs</a>
+        <a href="https://github.com/[TON_USER]/gabier" style="font-size: 14px; font-weight: 700; color: #0F1B2D; background: #F4EFE6; border-radius: 8px; padding: 10px 16px; text-decoration: none; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">GitHub</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 760px; margin: 0 auto 0 0; padding: 72px 24px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: #2BB5A0">How it works</div>
+      <h1 style="margin: 0; font-size: 56px; line-height: 1.02; font-weight: 700; letter-spacing: -0.03em">Watch, recognize, shout.</h1>
+      <p style="margin: 0; font-size: 19px; line-height: 1.5; color: #BFC9D8">Three stages, three source files, one async pipeline. Here is what happens between someone typing <code>ssh</code> and your phone buzzing.</p>
+    </div>
+  </section>
+
+  <!-- Pipeline diagram: placed boxes, not one svg -->
+  <section style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 56px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; align-items: stretch; gap: 0">
+      <div style="flex: 1 1 200px; min-width: 0; background: #0F1B2D; border: 1px solid #22344F; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3">sshd</span>
+        <span style="font-weight: 700; font-size: 17px">Writes to the journal</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #BFC9D8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">Accepted publickey for …</span>
+      </div>
+      <div style="flex: 0 0 48px; display: flex; align-items: center; justify-content: center"><svg width="28" height="20" viewBox="0 0 28 20" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10h22M18 4l6 6-6 6"></path></svg></div>
+      <div style="flex: 1 1 200px; min-width: 0; background: #0F1B2D; border: 1px solid #2BB5A0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #2BB5A0">source.rs</span>
+        <span style="font-weight: 700; font-size: 17px">Streams lines</span>
+        <span style="font-size: 13px; color: #BFC9D8">journalctl --follow, or a rotation-aware tail</span>
+      </div>
+      <div style="flex: 0 0 48px; display: flex; align-items: center; justify-content: center"><svg width="28" height="20" viewBox="0 0 28 20" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10h22M18 4l6 6-6 6"></path></svg></div>
+      <div style="flex: 1 1 200px; min-width: 0; background: #0F1B2D; border: 1px solid #2BB5A0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #2BB5A0">event.rs</span>
+        <span style="font-weight: 700; font-size: 17px">Parses &amp; filters</span>
+        <span style="font-size: 13px; color: #BFC9D8">3 regexes, ignore lists, event toggles</span>
+      </div>
+      <div style="flex: 0 0 48px; display: flex; align-items: center; justify-content: center"><svg width="28" height="20" viewBox="0 0 28 20" fill="none" stroke="#2BB5A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10h22M18 4l6 6-6 6"></path></svg></div>
+      <div style="flex: 1 1 200px; min-width: 0; background: #0F1B2D; border: 1px solid #E8613A; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #E8613A">notify/*.rs</span>
+        <span style="font-weight: 700; font-size: 17px">Posts webhooks</span>
+        <span style="font-size: 13px; color: #BFC9D8">Discord embed, Slack Block Kit, one task each</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stage 1 -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">01 · Watch</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Reading the journal without owning it</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">On a systemd host Gabier spawns <code>journalctl --follow --lines=0 --output=cat</code> filtered on the sshd unit and reads its stdout line by line. Starting at zero lines means a restart never replays old logins. If journalctl exits, Gabier waits three seconds and spawns it again.</p>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">With <code>kind = "file"</code> it opens the log, seeks to the end, and polls the size every 500 ms. A file that shrinks or vanishes means logrotate ran; Gabier reopens it from the start of the new file.</p>
+      </div>
+      <div style="flex: 1 1 360px; min-width: 0; background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 18px 20px; box-sizing: border-box; overflow-x: auto">
+        <pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #7C8CA3">// source.rs — journald</span>
+<span style="color: #F2A27A">let mut</span> cmd = Command::new(<span style="color: #2BB5A0">"journalctl"</span>);
+cmd.args([<span style="color: #2BB5A0">"--follow"</span>, <span style="color: #2BB5A0">"--lines=0"</span>, <span style="color: #2BB5A0">"--output=cat"</span>]);
+<span style="color: #F2A27A">for</span> u <span style="color: #F2A27A">in</span> units { cmd.arg(<span style="color: #2BB5A0">"--unit"</span>).arg(u); }
+
+<span style="color: #F2A27A">while let</span> Some(line) = lines.next_line().<span style="color: #F2A27A">await</span>? {
+    tx.send(line).<span style="color: #F2A27A">await</span>?;   <span style="color: #7C8CA3">// bounded channel, 256</span>
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stage 2 -->
+  <section style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+      <div style="flex: 1 1 360px; min-width: 0; background: #0F1B2D; border: 1px solid #22344F; border-radius: 12px; padding: 18px 20px; box-sizing: border-box; overflow-x: auto">
+        <pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #7C8CA3">// event.rs</span>
+<span style="color: #F2A27A">pub enum</span> SshEvent {
+    Accepted { user, ip, port, method, key },
+    Failed   { user, ip, port, method, invalid_user },
+    Disconnected { user, ip, port },
+}
+
+<span style="color: #7C8CA3">// Accepted publickey for alice from 203.0.113.7 port 51234 ssh2: ED25519 SHA256:…</span>
+r<span style="color: #2BB5A0">"Accepted (?P&lt;method&gt;[\w-]+) for (?P&lt;user&gt;\S+) from (?P&lt;ip&gt;\S+) port (?P&lt;port&gt;\d+)"</span></pre>
+      </div>
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">02 · Recognize</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Three regexes, nothing clever</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">sshd's log lines have been stable for a very long time. Gabier matches exactly three of them: <code>Accepted</code>, <code>Failed</code> and <code>Disconnected from user</code>. Anything else, including the pam session noise, is dropped before it costs anything.</p>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">A matched event then goes through the toggles and the ignore lists from <code>[events]</code>. The parser is pure and covered by unit tests, so a distro that formats a line differently is a one-line fix with a test.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stage 3 -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #2BB5A0">03 · Shout</div>
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">One task per channel, never blocking</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">Each channel implements a tiny <code>Notifier</code> trait. For every event, Gabier spawns one task per channel; a Discord outage never delays Slack, and neither delays reading the next line. Requests time out after ten seconds and a failure is logged, not retried, so a flapping webhook cannot pile up a queue.</p>
+      </div>
+      <div style="flex: 1 1 360px; min-width: 0; background: #132238; border: 1px solid #22344F; border-radius: 12px; padding: 18px 20px; box-sizing: border-box; overflow-x: auto">
+        <pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.7; color: #F4EFE6; white-space: pre"><span style="color: #7C8CA3">// notify/mod.rs</span>
+<span style="color: #F2A27A">pub trait</span> Notifier: Send + Sync {
+    <span style="color: #F2A27A">fn</span> name(&amp;self) -&gt; &amp;<span style="color: #F2A27A">'static</span> str;
+    <span style="color: #F2A27A">fn</span> send(&amp;self, n: &amp;Notification) -&gt; BoxFuture&lt;Result&lt;()&gt;&gt;;
+}
+
+<span style="color: #7C8CA3">// main.rs</span>
+<span style="color: #F2A27A">for</span> notifier <span style="color: #F2A27A">in</span> &amp;notifiers {
+    tokio::spawn(<span style="color: #F2A27A">async move</span> { notifier.send(&amp;n).<span style="color: #F2A27A">await</span> });
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Security model -->
+  <section style="width: 100%; box-sizing: border-box; background: #132238; border-top: 1px solid #22344F; border-bottom: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 640px">
+        <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">The security model</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8">What Gabier can touch, and what it cannot, when started from the shipped unit.</p>
+      </div>
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 16px">
+        <div style="flex: 1 1 240px; min-width: 0; background: #0F1B2D; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #2BB5A0">Can</div>
+          <div style="font-size: 15px; line-height: 1.6; color: #BFC9D8">Read the journal (group <code>systemd-journal</code>)<br>Read <code>/etc/gabier</code><br>Open outbound TCP to your webhooks</div>
+        </div>
+        <div style="flex: 1 1 240px; min-width: 0; background: #0F1B2D; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #E8613A">Cannot</div>
+          <div style="font-size: 15px; line-height: 1.6; color: #BFC9D8">Write anywhere but <code>/tmp</code> (private)<br>See <code>/home</code>, devices, kernel tunables<br>Gain privileges or run writable+executable memory</div>
+        </div>
+        <div style="flex: 1 1 240px; min-width: 0; background: #0F1B2D; border: 1px solid #22344F; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #7C8CA3">Trust</div>
+          <div style="font-size: 15px; line-height: 1.6; color: #BFC9D8">The webhook URL is the only secret. Keep the config <code>600</code>. Rotate the webhook if it leaks; nothing else is exposed.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stack -->
+  <section style="width: 100%; box-sizing: border-box">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 64px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+      <h2 style="margin: 0; font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -0.02em">Under the hood</h2>
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 6px 12px">tokio</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 6px 12px">reqwest + rustls</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 6px 12px">regex</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 6px 12px">serde + toml</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 6px 12px">clap</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 6px 12px">tracing</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 6px 12px">no OpenSSL</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #BFC9D8; border: 1px solid #22344F; border-radius: 999px; padding: 6px 12px">no unsafe</span>
+      </div>
+      <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #BFC9D8; max-width: 640px">About [X] lines of Rust. Small enough to read in one sitting, which is the point: you should be able to audit the thing that watches your server.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 56px 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px">
+      <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 24px; font-weight: 700">Convinced?</span><span style="font-size: 15px; color: #BFC9D8">The install takes less time than reading this page did.</span></div>
+      <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px">
+        <a href="install.html" style="font-size: 16px; font-weight: 700; color: #0F1B2D; background: #E8613A; border-radius: 10px; padding: 14px 22px; text-decoration: none; min-height: 48px; box-sizing: border-box; display: inline-flex; align-items: center">Install</a>
+        <a href="https://github.com/[TON_USER]/gabier" style="font-size: 16px; font-weight: 500; color: #F4EFE6; border: 1px solid #3A4F6E; border-radius: 10px; padding: 14px 22px; text-decoration: none; min-height: 48px; box-sizing: border-box; display: inline-flex; align-items: center">Read the source</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="width: 100%; box-sizing: border-box; border-top: 1px solid #22344F; margin-top: auto; background: #0B1424">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: #7C8CA3">
+      <span>© 2026 Gabier · MIT License · Made in Rust, in France.</span>
+      <div style="display: flex; flex-direction: row; gap: 18px">
+        <a href="docs/" style="color: #BFC9D8; text-decoration: none">Docs</a>
+        <a href="https://github.com/[TON_USER]/gabier" style="color: #BFC9D8; text-decoration: none">GitHub</a>
+        <a href="https://crates.io/crates/gabier" style="color: #BFC9D8; text-decoration: none">crates.io</a>
+      </div>
+    </div>
+  </footer>
+</div>
+<script src="assets/site.js"></script>
+</body>
+</html>

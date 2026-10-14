@@ -1,0 +1,135 @@
+---
+title: Configuration
+eyebrow: Reference
+description: Every key Gabier reads from /etc/gabier/config.toml — server name, log source, events, burst throttling, geolocation, and the Discord and Slack destinations — with defaults.
+group: Reference
+order: 1
+---
+
+import Callout from "../../components/Callout.astro";
+
+Gabier reads one TOML file. Without `--config` it looks for `./config.toml`, then
+`/etc/gabier/config.toml`, and stops at the first one that exists.
+
+At least one destination is required: `[discord]`, `[slack]`, or both. With both, every notification goes to
+both — and if one is down, the other still gets through.
+
+## Top level
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `geoip` | `false` | Adds country, city and network operator to the notification. **Sends every source IP to `ipwho.is`.** |
+
+## `[server]`
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `name` | the machine hostname | Name shown in notifications. Set it when you watch several machines. |
+
+```toml
+[server]
+name = "vps-prod-1"
+```
+
+## `[source]`
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `kind` | `"journald"` | `journald` follows `journalctl --follow`; `file` tails a file through rotations; `stdin` reads a pipe, for testing. |
+| `units` | `["ssh", "sshd"]` | Units to follow, journald only. Following both costs nothing — journalctl ignores the one that does not exist. |
+| `path` | — | File to tail, with `kind = "file"`: `/var/log/auth.log` on Debian and Ubuntu, `/var/log/secure` on the RHEL family. |
+
+```toml
+[source]
+kind = "file"
+path = "/var/log/auth.log"
+```
+
+Reading follows logrotate, so there is nothing to restart after a rotation.
+
+## `[events]`
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `accepted` | `true` | Successful logins. The one event that always matters. |
+| `failed` | `true` | Failed authentication on an existing account. |
+| `invalid_user` | `true` | Attempts on an account that does not exist — the signature of a scan. |
+| `closed` | `false` | Disconnections. Doubles the volume for little value. |
+
+Failures are on by default because [throttling](/docs/throttling/) already keeps them readable; turn them off
+if you would rather see nothing but successes.
+
+## `[throttle]`
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `window_secs` | `300` | Length of the grouping window, per source IP. |
+| `burst` | `1` | How many failures from one IP go out immediately before the rest are counted and summarised. |
+
+```toml
+[throttle]
+window_secs = 300
+burst = 1
+```
+
+Successful logins are never grouped. The whole mechanism is explained on [Throttling](/docs/throttling/).
+
+## `[discord]` and `[slack]`
+
+Both sections take exactly the same shape. Only the mention syntax differs.
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `webhook_url` | — | The incoming webhook. **Secret.** May be left empty and supplied by the environment instead. |
+| `username` | `"Gabier"` | Name the message is posted under. |
+| `ping` | — | Who to mention. Discord: `<@123456789>` or `<@&123456789>`. Slack: `<@U0123ABCD>`, `<!subteam^S0123ABCD>` or `<!channel>`. |
+| `ping_on_accepted` | `false` | Mention on a successful login. |
+| `ping_on_failure` | `false` | Mention on a failure or a burst summary. |
+
+```toml
+[discord]
+webhook_url = "https://discord.com/api/webhooks/…"
+username = "Gabier"
+ping = "<@123456789>"
+ping_on_accepted = true
+ping_on_failure = false
+
+[slack]
+webhook_url = "https://hooks.slack.com/services/T000/B000/xxxx"
+username = "Gabier"
+ping = "<!channel>"
+ping_on_failure = true
+```
+
+## Secrets in the environment
+
+Leave `webhook_url` empty and export the secret instead. The shipped unit already reads `/etc/gabier/env`.
+
+| Variable | Replaces |
+| --- | --- |
+| `GABIER_DISCORD_WEBHOOK` | `discord.webhook_url` |
+| `GABIER_SLACK_WEBHOOK` | `slack.webhook_url` |
+
+```shellsession
+$ sudo tee /etc/gabier/env >/dev/null <<'EOF'
+GABIER_DISCORD_WEBHOOK=https://discord.com/api/webhooks/...
+GABIER_SLACK_WEBHOOK=https://hooks.slack.com/services/...
+EOF
+$ sudo chmod 600 /etc/gabier/env
+```
+
+<Callout variant="warning" title="A webhook URL is a credential.">
+  Anyone holding it can post in your channel. <code>install.sh</code> gives the config mode <code>0640</code>
+  owned by <code>root:gabier</code>; keep it that way, never commit it, and delete the webhook on the Discord or
+  Slack side if it leaks — that invalidates it immediately.
+</Callout>
+
+## Validating a change
+
+```shellsession
+$ sudo -u gabier gabier check --config /etc/gabier/config.toml
+$ sudo systemctl restart gabier
+```
+
+`check` prints the effective configuration with the webhook token masked, probes every destination, and exits
+non-zero if any of them fails — which makes it a usable gate in a deploy script.

@@ -1,0 +1,117 @@
+---
+title: Put Pince on watch in two minutes
+navTitle: Getting started
+eyebrow: Getting started
+description: Gabier is a small Rust daemon that follows your sshd logs and notifies Discord or Slack whenever someone connects. This page takes you from a clone to a running service.
+group: Getting started
+order: 1
+---
+
+import Callout from "../../components/Callout.astro";
+
+<ul class="not-prose m-0 flex list-none flex-wrap gap-2 p-0">
+  <li class="pill">Linux · systemd</li>
+  <li class="pill">Rust 1.75+ to build</li>
+  <li class="pill">root to install</li>
+</ul>
+
+## Build
+
+Gabier is not on crates.io yet, so you build it from the repository. One release profile, one static-ish
+binary, no runtime dependency.
+
+```shellsession
+$ git clone https://github.com/fllottie/gabier
+$ cd gabier
+$ cargo build --release
+```
+
+<Callout title="No Rust on the server?">
+  Build a fully static Linux binary anywhere with Docker, then copy it over:
+  <code>docker run --rm -v "$PWD:/app" -w /app rust:1-slim sh -c "rustup target add
+  x86_64-unknown-linux-musl && cargo build --release --target x86_64-unknown-linux-musl"</code>
+</Callout>
+
+## Install
+
+`install.sh` does the whole job: it creates a dedicated `gabier` service account with no shell and no home,
+installs the binary and the hardened unit, drops an example config and enables the service at boot.
+
+```shellsession
+$ sudo ./install.sh
+# or, with a binary built elsewhere:
+$ sudo ./install.sh /tmp/gabier
+```
+
+It lays down:
+
+| Path | What |
+| --- | --- |
+| `/usr/local/bin/gabier` | the binary |
+| `/etc/gabier/config.toml` | your config, mode `0640`, group `gabier` |
+| `/etc/gabier/env` | optional, for the webhook secrets |
+| `/etc/systemd/system/gabier.service` | the hardened unit |
+
+An existing `config.toml` is never overwritten, so re-running the script is how you upgrade.
+
+## Configure
+
+Open the config and paste at least one webhook:
+
+```shellsession
+$ sudo nano /etc/gabier/config.toml
+```
+
+A minimal config is three lines plus a destination:
+
+```toml
+[server]
+name = "vps-prod-1"
+
+[discord]
+webhook_url = "https://discord.com/api/webhooks/…"
+```
+
+Every key is documented in the [configuration reference](/docs/configuration/).
+
+<Callout variant="warning" title="Keeping the secret out of the config file">
+  Put it in the environment file instead — the unit already reads it, and nothing then holds a token in a file
+  you might copy around:
+  <code>sudo tee /etc/gabier/env &lt;&lt;&lt;'GABIER_DISCORD_WEBHOOK=https://discord.com/api/webhooks/…'</code>
+  then <code>sudo chmod 600 /etc/gabier/env</code>.
+</Callout>
+
+## Verify, then start
+
+`check` validates the config and actually reaches the webhook, without posting anything to your channel.
+`test` posts one real message.
+
+```shellsession
+$ sudo -u gabier gabier check --config /etc/gabier/config.toml
+config    /etc/gabier/config.toml
+serveur   vps-prod-1
+source    journald (ssh, sshd)
+évènements accepted=true failed=true invalid_user=true closed=false
+anti-spam 1 échec(s) par IP, puis résumé toutes les 300s
+geoip     false
+discord   https://discord.com/api/webhooks/123/abcd…
+          joignable
+
+Tout est prêt.
+$ sudo -u gabier gabier test --config /etc/gabier/config.toml
+$ sudo systemctl start gabier
+$ sudo journalctl -u gabier -f
+```
+
+<Callout variant="warning" title="Now open an SSH session from another machine.">
+  Pince should shout in your channel within a second. If nothing shows up, jump to
+  <a href="/docs/troubleshooting/">Troubleshooting</a>.
+</Callout>
+
+## What to read next
+
+- [Configuration](/docs/configuration/) — every key, its default and what it changes.
+- [Throttling](/docs/throttling/) — the burst logic that keeps a port-22 scan out of your channel.
+- [CLI](/docs/cli/) — the four subcommands, `--dry-run` and `replay`.
+- [Events](/docs/events/) — the sshd lines Gabier recognises.
+- [Discord](/docs/discord/) and [Slack](/docs/slack/) — getting a webhook from each.
